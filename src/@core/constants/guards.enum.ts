@@ -1,0 +1,4 @@
+export enum GUARDS {
+    AUTH_GUARD = 'AUTH_GUARD',
+    PUBLIC_GUARD = 'PUBLIC_GUARD',
+  }
