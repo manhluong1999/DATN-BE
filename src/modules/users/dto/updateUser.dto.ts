@@ -9,5 +9,5 @@ export class UpdateUserDto {
 
   address: string;
 
-  imgUrl: string
+  imgUrl: string;
 }

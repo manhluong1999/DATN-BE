@@ -16,9 +16,15 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtModule.register({
       // secret: config.jwt.access_token_secret,
       // signOptions: { expiresIn: config.jwt.access_token_expireTime }
-    })],
+    }),
+  ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, LocalStrategy, JwtStrategy, JwtRefreshTokenStrategy],
-  exports: [AuthenticationService]
+  providers: [
+    AuthenticationService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtRefreshTokenStrategy,
+  ],
+  exports: [AuthenticationService],
 })
-export class AuthenticationModule { }
+export class AuthenticationModule {}

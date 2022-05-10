@@ -4,9 +4,7 @@ import { HealthCheck } from '@nestjs/terminus';
 
 @Controller()
 export class HealthController {
-  constructor(
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @HealthCheck()

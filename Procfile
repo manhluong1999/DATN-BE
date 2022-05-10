@@ -1,1 +1,1 @@
-web: yarn start:dev
+web: npm install -g @nestjs/cli & yarn start:dev

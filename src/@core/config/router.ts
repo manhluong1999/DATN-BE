@@ -9,15 +9,15 @@ export const ROUTERS: Routes = [
     children: [
       {
         path: '/authentication',
-        module: AuthenticationModule
+        module: AuthenticationModule,
       },
       {
         path: '/users',
-        module: UsersModule
+        module: UsersModule,
       },
       {
         path: '/health',
-        module: HealthModule
+        module: HealthModule,
       },
     ],
   },

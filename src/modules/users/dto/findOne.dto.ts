@@ -1,5 +1,3 @@
 export class FindByEmailDto {
-    email: string;
+  email: string;
 }
-  
-  

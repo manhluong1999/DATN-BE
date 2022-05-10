@@ -20,7 +20,7 @@ export class User {
 
   @Prop({
     default: Role.User,
-    enum: Role
+    enum: Role,
   })
   role: Role;
 
@@ -42,16 +42,16 @@ export class User {
   fullName: string;
 
   @Prop()
-  phone: string
+  phone: string;
 
   @Prop()
-  fax: string
+  fax: string;
 
   @Prop()
-  address: string
+  address: string;
 
   @Prop()
-  imgUrl: string
+  imgUrl: string;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

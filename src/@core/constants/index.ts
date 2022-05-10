@@ -1,2 +1,2 @@
-export * from './mongoError.enum'
-export * from './role.enum'
+export * from './mongoError.enum';
+export * from './role.enum';

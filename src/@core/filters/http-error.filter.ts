@@ -4,11 +4,10 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger
+  Logger,
 } from '@nestjs/common';
 import { format } from 'date-fns';
 import { Request, Response } from 'express';
-
 
 @Catch(HttpException)
 export class HttpErrorFilter implements ExceptionFilter {

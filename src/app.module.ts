@@ -9,7 +9,7 @@ import { LoggingInterceptor } from './@core/interceptors';
 import { DatabaseModule } from './database/database.module';
 import { MODULES } from './modules';
 
-console.log('API DOCS: http://localhost:4000/api')
+console.log('API DOCS: http://localhost:4000/api');
 
 @Module({
   imports: [
@@ -45,5 +45,4 @@ console.log('API DOCS: http://localhost:4000/api')
     // }
   ],
 })
-
-export class AppModule { }
+export class AppModule {}

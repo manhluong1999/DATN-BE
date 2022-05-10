@@ -8,7 +8,7 @@ import {
   UnAuthorizedExceptionCustom,
 } from './../../@core/exceptions';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/schemas/user.schema';
 import { config } from 'src/@core/config';
@@ -18,12 +18,12 @@ import CreateUserDto from '../users/dto/createUser.dto';
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
 
   public async register(registrationData: CreateUserDto) {
-    registrationData.role = undefined
-    return this.usersService.createUser(registrationData)
+    registrationData.role = undefined;
+    return this.usersService.createUser(registrationData);
   }
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
@@ -37,11 +37,13 @@ export class AuthenticationService {
   }
   public async login(user: User) {
     try {
-      const userId = user._id.toString()
+      const userId = user._id.toString();
       const payload: TokenPayload = { userId };
-      const { accessToken, accessTokenExpiresAt } = this.getJwtAccessToken(payload)
+      const { accessToken, accessTokenExpiresAt } =
+        this.getJwtAccessToken(payload);
 
-      const { refreshToken, refreshTokenExpiresAt } = this.getJwtRefreshToken(payload)
+      const { refreshToken, refreshTokenExpiresAt } =
+        this.getJwtRefreshToken(payload);
 
       await this.usersService.setCurrentRefreshToken(refreshToken, userId);
 
@@ -49,7 +51,7 @@ export class AuthenticationService {
         accessToken,
         refreshToken,
         accessTokenExpiresAt,
-        refreshTokenExpiresAt
+        refreshTokenExpiresAt,
       };
     } catch (error) {
       throw new BadRequestExceptionCustom();
@@ -65,9 +67,7 @@ export class AuthenticationService {
       hashedPassword,
     );
     if (!isPasswordMatching) {
-      throw new UnAuthorizedExceptionCustom(
-        'Wrong credentials provided',
-      );
+      throw new UnAuthorizedExceptionCustom('Wrong credentials provided');
     }
   }
   getJwtAccessToken(payload: TokenPayload) {
@@ -78,7 +78,8 @@ export class AuthenticationService {
     return {
       accessToken,
       accessTokenExpiresAt:
-        getTime(new Date()) + Number(config.jwt.access_token_expireTime.slice(0, -1)) * 1000, // 3600s
+        getTime(new Date()) +
+        Number(config.jwt.access_token_expireTime.slice(0, -1)) * 1000, // 3600s
     };
   }
   getJwtRefreshToken(payload: TokenPayload) {
@@ -89,7 +90,8 @@ export class AuthenticationService {
     return {
       refreshToken,
       refreshTokenExpiresAt:
-        getTime(new Date()) + Number(config.jwt.refresh_token_expireTime.slice(0, -1)) * 86400000, // 7 days
+        getTime(new Date()) +
+        Number(config.jwt.refresh_token_expireTime.slice(0, -1)) * 86400000, // 7 days
     };
   }
 }

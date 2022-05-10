@@ -5,14 +5,17 @@ import CreateUserDto from './dto/createUser.dto';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { BadRequestExceptionCustom, InternalServerExceptionCustom, NotFoundExceptionCustom, UnAuthorizedExceptionCustom } from 'src/@core/exceptions';
+import {
+  BadRequestExceptionCustom,
+  InternalServerExceptionCustom,
+  NotFoundExceptionCustom,
+  UnAuthorizedExceptionCustom,
+} from 'src/@core/exceptions';
 import { MongoError } from 'src/@core/constants';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-  ) { }
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async getById(id: string) {
     const user = await this.userModel.findById(id);
@@ -78,7 +81,6 @@ export class UsersService {
     if (user) {
       return user;
     }
-    throw new NotFoundExceptionCustom('User with this email does not exist')
+    throw new NotFoundExceptionCustom('User with this email does not exist');
   }
-
 }
