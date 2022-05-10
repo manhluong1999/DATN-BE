@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, Post, Request, UseGuards } from '@nest
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
 import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
+import JwtRefreshTokenGuard from './guards/jwt-refresh-token-authentication.guard';
 import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
 import RequestWithUser from './interfaces/requestWithUser.interface';
 
@@ -21,16 +22,24 @@ export class AuthenticationController {
     return this.authenticationService.login(req.user)
   }
 
-  @Post('log-out')
-  async logout() {
-    return this.authenticationService.logout()
-  }
-
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   authenticate(@Request() request: RequestWithUser) {
     const user = request.user;
-    // user.password = undefined;
     return user;
+  }
+
+  @UseGuards(JwtRefreshTokenGuard)
+  @Get('refresh-token')
+  refreshToken(@Request() request: RequestWithUser) {
+    const user = request.user;
+    const userId = user._id.toString()
+    const payload: TokenPayload = { userId };
+    const { accessToken, accessTokenExpiresAt } = this.authenticationService.getJwtAccessToken(payload)
+
+    return {
+      accessToken,
+      accessTokenExpiresAt 
+    };
   }
 }
