@@ -1,1 +1,1 @@
-web: yarn add --dev @nestjs/config & yarn start:dev
+web: yarn start:dev
