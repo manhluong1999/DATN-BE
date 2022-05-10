@@ -11,6 +11,10 @@ $ npm install
 $ yarn install
 ```
 
+## Environment
+```
+$ cp .env.example .env
+```
 ## Running the app
 
 ```bash
@@ -19,9 +23,16 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev 
+
 $ yarn start:dev 
 # production mode
 $ npm run start:prod
+```
+
+## API CHECKING
+
+```
+localhost:4000/api/v1/health
 ```
 ## Author
 

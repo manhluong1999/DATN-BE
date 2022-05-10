@@ -1,29 +1,36 @@
-import { Public } from './../../@core/constants/decorators.constants';
-import { GUARDS } from './../../@core/constants/guards.enum';
-import { LogInDto } from './dto/logIn.dto';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
-import { ApiSecurity } from '@nestjs/swagger';
+import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
+import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
+import RequestWithUser from './interfaces/requestWithUser.interface';
 
-@ApiSecurity('authorization')
 @Controller()
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
-  @Public([GUARDS.AUTH_GUARD])
+  constructor(private readonly authenticationService: AuthenticationService) { }
+
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
     return this.authenticationService.register(registrationData);
   }
-  @Public([GUARDS.AUTH_GUARD])
-  @Post('login')
-  async login( @Body() loginData : LogInDto) {
-    return this.authenticationService.login(loginData)
+
+  @HttpCode(200)
+  @UseGuards(LocalAuthenticationGuard)
+  @Post('log-in')
+  async login(@Request() req: RequestWithUser) {
+    return this.authenticationService.login(req.user)
   }
 
-  @Public([GUARDS.AUTH_GUARD])
-  @Post('logout')
+  @Post('log-out')
   async logout() {
     return this.authenticationService.logout()
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get()
+  authenticate(@Request() request: RequestWithUser) {
+    const user = request.user;
+    user.password = undefined;
+    return user;
   }
 }

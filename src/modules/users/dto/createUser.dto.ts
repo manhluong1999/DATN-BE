@@ -2,7 +2,7 @@ export class CreateUserDto {
   email: string;
   firstName: string;
   lastName: string;
-  uid: string;
+  password: string;
 }
 
 export default CreateUserDto;

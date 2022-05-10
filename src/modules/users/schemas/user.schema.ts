@@ -21,13 +21,13 @@ export class User {
   firstName: string;
 
   @Prop()
+  password: string;
+
+  @Prop()
   lastName: string;
 
   @Prop()
   fullName: string;
-
-  @Prop()
-  uid: string
 
   @Prop()
   phone: string

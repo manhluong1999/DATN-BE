@@ -1,21 +1,17 @@
-import { UpdateUserDto } from './dto/updateUser.dto';
-import { GUARDS } from './../../@core/constants/guards.enum';
-import { Public } from './../../@core/constants/decorators.constants';
-import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, Put, } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, UseGuards, } from '@nestjs/common';
 import { UsersService } from './users.service';
+import JwtAuthenticationGuard from '../authentication/guards/jwt-authentication.guard';
 
-@ApiBearerAuth('JWT')
 @Controller()
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-  @Public([GUARDS.PUBLIC_GUARD])
+  constructor(private readonly usersService: UsersService) { }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Get()
   async findAll() {
     return this.usersService.findAll();
   }
 
-  @Public([GUARDS.PUBLIC_GUARD])
   @Get(':email')
   async findByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);

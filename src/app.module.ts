@@ -1,4 +1,3 @@
-import { AuthGuard } from './modules/authentication/guards/auth.guard';
 import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -10,6 +9,7 @@ import { LoggingInterceptor } from './@core/interceptors';
 import { DatabaseModule } from './database/database.module';
 import { MODULES } from './modules';
 
+console.log('API DOCS: http://localhost:4000/api')
 
 @Module({
   imports: [
@@ -19,6 +19,8 @@ import { MODULES } from './modules';
         MONGO_PASSWORD: Joi.string().required(),
         MONGO_DATABASE: Joi.string().required(),
         MONGO_HOST: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
     RouterModule.forRoutes(ROUTERS),
@@ -41,4 +43,5 @@ import { MODULES } from './modules';
     // }
   ],
 })
-export class AppModule {}
+
+export class AppModule { }

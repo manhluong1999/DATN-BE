@@ -14,4 +14,8 @@ export const config = {
         database: process.env.MONGO_DATABASE,
         host: process.env.MONGO_HOST,
     },
+    jwt: {
+        secret: process.env.JWT_SECRET,
+        expireTime: process.env.JWT_EXPIRATION_TIME,
+    }
 }
