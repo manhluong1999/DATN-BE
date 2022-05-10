@@ -1,4 +1,4 @@
-import { FindByEmailDto } from './dto/findOne.dto';
+import * as bcrypt from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateUserDto from './dto/createUser.dto';
@@ -28,6 +28,17 @@ export class UsersService {
 
   async findAll(): Promise<UserDocument[]> {
     return this.userModel.find();
+  }
+
+  async setCurrentRefreshToken(refreshToken: string, userId: string) {
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    const user = await this.userModel
+      .findByIdAndUpdate(userId, { currentHashedRefreshToken })
+      .setOptions({ overwrite: false });
+
+    if (!user) {
+      throw new NotFoundExceptionCustom('USER NOT FOUND');
+    }
   }
 
   async findByEmail(email: string) {

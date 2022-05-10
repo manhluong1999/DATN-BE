@@ -30,7 +30,7 @@ export class AuthenticationController {
   @Get()
   authenticate(@Request() request: RequestWithUser) {
     const user = request.user;
-    user.password = undefined;
+    // user.password = undefined;
     return user;
   }
 }

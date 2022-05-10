@@ -13,6 +13,7 @@ import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/schemas/user.schema';
 import { config } from 'src/@core/config';
+import { getTime } from 'date-fns';
 @Injectable()
 export class AuthenticationService {
   constructor(
@@ -27,7 +28,7 @@ export class AuthenticationService {
         ...registrationData,
         password: hashedPassword,
       });
-      createdUser.password = undefined;
+      // createdUser.password = undefined;
       return createdUser;
     } catch (error) {
       if (error?.code === MongoError.DuplicateKey) {
@@ -43,7 +44,7 @@ export class AuthenticationService {
       const user = await this.usersService.findByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
 
-      user.password = undefined;
+      // user.password = undefined;
       return user;
     } catch (error) {
       throw new UnAuthorizedExceptionCustom('Wrong credentials provided');
@@ -51,15 +52,12 @@ export class AuthenticationService {
   }
   async login(user: User) {
     try {
-      console.log(user)
       const payload: TokenPayload = { userId: user._id.toString() };
 
       return {
-        access_token: this.jwtService.sign(payload,
-          {
-            secret: config.jwt.secret,
-            expiresIn: config.jwt.expireTime
-          }),
+        accessToken: this.jwtService.sign(payload),
+        expiresAt:
+          getTime(new Date()) + Number(config.jwt.access_token_expireTime.slice(0, -1)) * 1000,
       };
     } catch (error) {
       throw new BadRequestExceptionCustom();

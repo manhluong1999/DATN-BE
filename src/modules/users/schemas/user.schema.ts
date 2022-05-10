@@ -21,7 +21,12 @@ export class User {
   firstName: string;
 
   @Prop()
+  @Exclude()
   password: string;
+
+  @Prop()
+  @Exclude()
+  currentHashedRefreshToken: string;
 
   @Prop()
   lastName: string;
@@ -43,7 +48,13 @@ export class User {
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
-
+UserSchema.set('toJSON', {
+  transform: function (doc, ret, opt) {
+    delete ret['password'];
+    delete ret['currentHashedRefreshToken'];
+    return ret;
+  },
+});
 UserSchema.index({ email: 'text' });
 
 export { UserSchema };

@@ -15,7 +15,9 @@ export const config = {
         host: process.env.MONGO_HOST,
     },
     jwt: {
-        secret: process.env.JWT_SECRET,
-        expireTime: process.env.JWT_EXPIRATION_TIME,
+        access_token_secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+        access_token_expireTime: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+        refresh_token_secret: process.env.JWT_REFRESH_TOKEN_SECRET,
+        refresh_token_expireTime: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     }
 }

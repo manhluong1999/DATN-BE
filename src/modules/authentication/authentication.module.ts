@@ -13,8 +13,8 @@ import { LocalStrategy } from './strategies/local.strategy';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: config.jwt.secret,
-      signOptions: { expiresIn: config.jwt.expireTime }
+      secret: config.jwt.access_token_secret,
+      signOptions: { expiresIn: config.jwt.access_token_expireTime }
     })],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, LocalStrategy, JwtStrategy],
