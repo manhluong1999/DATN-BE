@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/schemas/user.schema';
 import { config } from 'src/@core/config';
 import { getTime } from 'date-fns';
+import CreateUserDto from '../users/dto/createUser.dto';
 @Injectable()
 export class AuthenticationService {
   constructor(
@@ -20,23 +21,9 @@ export class AuthenticationService {
     private readonly jwtService: JwtService
   ) { }
 
-  public async register(registrationData: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registrationData.password, 10);
-    try {
-      const createdUser = await this.usersService.create({
-        ...registrationData,
-        password: hashedPassword,
-      });
-      // createdUser.password = undefined;
-      return createdUser;
-    } catch (error) {
-      if (error?.code === MongoError.DuplicateKey) {
-        throw new UnAuthorizedExceptionCustom(
-          'User with that email already exists',
-        );
-      }
-      throw new InternalServerExceptionCustom();
-    }
+  public async register(registrationData: CreateUserDto) {
+    registrationData.role = undefined
+    return this.usersService.createUser(registrationData)
   }
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
@@ -55,7 +42,7 @@ export class AuthenticationService {
       const { accessToken, accessTokenExpiresAt } = this.getJwtAccessToken(payload)
 
       const { refreshToken, refreshTokenExpiresAt } = this.getJwtRefreshToken(payload)
-      
+
       await this.usersService.setCurrentRefreshToken(refreshToken, userId);
 
       return {

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
+import { Role } from 'src/@core/constants';
 
 export type UserDocument = User & Document;
 
@@ -16,6 +17,12 @@ export class User {
 
   @Prop({ unique: true })
   email: string;
+
+  @Prop({
+    default: Role.User,
+    enum: Role
+  })
+  role: Role;
 
   @Prop()
   firstName: string;

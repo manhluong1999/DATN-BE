@@ -5,7 +5,8 @@ import CreateUserDto from './dto/createUser.dto';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { BadRequestExceptionCustom, NotFoundExceptionCustom } from 'src/@core/exceptions';
+import { BadRequestExceptionCustom, InternalServerExceptionCustom, NotFoundExceptionCustom, UnAuthorizedExceptionCustom } from 'src/@core/exceptions';
+import { MongoError } from 'src/@core/constants';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +20,24 @@ export class UsersService {
       throw new NotFoundExceptionCustom('USER NOT FOUND');
     }
     return user;
+  }
+
+  public async createUser(userData: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    try {
+      const createdUser = await this.create({
+        ...userData,
+        password: hashedPassword,
+      });
+      return createdUser;
+    } catch (error) {
+      if (error?.code === MongoError.DuplicateKey) {
+        throw new UnAuthorizedExceptionCustom(
+          'User with that email already exists',
+        );
+      }
+      throw new InternalServerExceptionCustom();
+    }
   }
 
   async create(userData: CreateUserDto) {
