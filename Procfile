@@ -1,1 +1,1 @@
-web: npm run start:prod
+web: yarn add --dev @nestjs/config & yarn start:prod
