@@ -10,7 +10,7 @@ export class HealthController {
   @HealthCheck()
   async check(): Promise<'ok' | 'ng'> {
     try {
-      await this.usersService.findAll();
+      await this.usersService.findAll({});
       return 'ok';
     } catch (error) {
       return 'ng';

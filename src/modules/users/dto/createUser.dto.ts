@@ -34,6 +34,10 @@ export class CreateUserDto {
   @MinLength(7)
   password: string;
 
+  @ApiProperty({
+    type: String,
+    example: 'lawyer',
+  })
   role?: Role;
 }
 

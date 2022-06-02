@@ -62,6 +62,6 @@ UserSchema.set('toJSON', {
     return ret;
   },
 });
-UserSchema.index({ email: 'text' });
+UserSchema.index({ email: 1 });
 
 export { UserSchema };

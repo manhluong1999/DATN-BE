@@ -1,8 +1,10 @@
 
 ## Description
-Last project in HUST
-My backend project using NestJS/Typescript
-
+My Graduation Project in HUST
+DEPLOYMENT
+```
+https://lawyer-connect.herokuapp.com/api/
+```
 ## Installation
 
 ```bash
@@ -34,6 +36,8 @@ $ npm run start:prod
 ```
 localhost:4000/api/v1/health
 ```
+
+
 ## Author
 
 - manhluong1999
