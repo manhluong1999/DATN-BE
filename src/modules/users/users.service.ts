@@ -32,7 +32,8 @@ export class UsersService {
   }
 
   public async createUser(userData: CreateLawyerDto | CreateUserDto) {
-    const rawPassword = userData.password || '123456789a';
+    const rawPassword =
+      userData.password || Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
     try {
       const createdUser = await this.create({
