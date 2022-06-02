@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -17,6 +18,7 @@ import CreateUserDto from './dto/createUser.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
+import RequestWithUser from '../authentication/interfaces/requestWithUser.interface';
 
 @Controller()
 export class UsersController {
@@ -49,8 +51,16 @@ export class UsersController {
   @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
   @ApiBearerAuth('JWT')
   @Put('lawyer')
-  async updateUser(@Body() updateLawyerDto: UpdateLawyerDto) {
+  async updateLawyer(@Body() updateLawyerDto: UpdateLawyerDto) {
     return this.usersService.updateLawyer(updateLawyerDto);
+  }
+
+  @UseGuards(RoleGuard([Role.User, Role.Lawyer]))
+  @ApiBearerAuth('JWT')
+  @Put()
+  async updateUser(@Req() request: RequestWithUser) {
+    console.log(request.user);
+    return request.user;
   }
 
   @UseGuards(RoleGuard([Role.Admin]))

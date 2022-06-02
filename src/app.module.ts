@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RouterModule } from 'nest-router';
 import { ROUTERS } from './@core/config';
+import { initFirebase } from './@core/config/firebase-config';
 import { HttpErrorFilter } from './@core/filters';
 import { LoggingInterceptor } from './@core/interceptors';
 import { DatabaseModule } from './database/database.module';
@@ -11,6 +12,7 @@ import { MODULES } from './modules';
 
 console.log('API DOCS: http://localhost:4000/api');
 
+initFirebase();
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,10 +41,6 @@ console.log('API DOCS: http://localhost:4000/api');
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard
-    // }
   ],
 })
 export class AppModule {}

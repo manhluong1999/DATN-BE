@@ -83,11 +83,13 @@ export class UsersService {
 
   async deleteUser(email: string) {
     const user = await this.userModel.findOne({ email });
-
-    if (user.role == Role.Lawyer) {
-      await this.lawyerDetailsService.deleteOne(email);
+    if (!user) {
+      throw new NotFoundExceptionCustom('user not found');
     }
-    await this.userModel.deleteOne({ email });
+    if (user.role == Role.Lawyer) {
+      this.lawyerDetailsService.deleteOne(email);
+    }
+    this.userModel.deleteOne({ email });
     return {
       isSuccess: true,
     };
