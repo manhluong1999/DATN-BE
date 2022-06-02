@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UpdateUserDto } from 'src/modules/users/dto/updateUser.dto';
 
-export class UpdateLawyerDto {
+export class UpdateLawyerDto extends UpdateUserDto {
   @ApiProperty({
     type: Array,
     example: ['major1'],

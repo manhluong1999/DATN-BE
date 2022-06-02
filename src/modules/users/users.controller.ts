@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -14,6 +16,7 @@ import { Role } from 'src/@core/constants';
 import CreateUserDto from './dto/createUser.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
+import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
 
 @Controller()
 export class UsersController {
@@ -26,11 +29,11 @@ export class UsersController {
     return this.usersService.findAll({ role: Role.User });
   }
 
-  @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
+  // @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
   @ApiBearerAuth('JWT')
   @Get('lawyer')
   async findAllLawyer() {
-    return this.usersService.findAll({ role: Role.Lawyer });
+    return this.usersService.findAllLawyers();
   }
 
   @UseGuards(RoleGuard([Role.Admin]))
@@ -41,5 +44,19 @@ export class UsersController {
       ...createLawyerDto,
       role: Role.Lawyer,
     });
+  }
+
+  @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
+  @ApiBearerAuth('JWT')
+  @Put('lawyer')
+  async updateUser(@Body() updateLawyerDto: UpdateLawyerDto) {
+    return this.usersService.updateLawyer(updateLawyerDto);
+  }
+
+  @UseGuards(RoleGuard([Role.Admin]))
+  @ApiBearerAuth('JWT')
+  @Delete()
+  async deleteUser(@Query('email') email: string) {
+    return this.usersService.deleteUser(email);
   }
 }

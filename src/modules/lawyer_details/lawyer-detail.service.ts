@@ -23,11 +23,19 @@ export class LawyerDetailService {
     return createdLawyer.save();
   }
 
-  async update(updateLawyerDto: UpdateLawyerDto) {
-    return this.model.updateOne({});
+  async updateOne(updateLawyerDto: UpdateLawyerDto) {
+    return this.model.updateOne(
+      { userEmail: updateLawyerDto.email },
+      { ...updateLawyerDto, userEmail: updateLawyerDto.email },
+      { upsert: true },
+    );
   }
 
+  async deleteOne(userEmail: string) {
+    return this.model.deleteOne({ userEmail });
+  }
   async findByEmail(email: string) {
-    return this.model.findOne({ userEmail: email });
+    const res = await this.model.findOne({ userEmail: email }).exec();
+    return res;
   }
 }

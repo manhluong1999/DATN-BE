@@ -11,9 +11,10 @@ import {
   NotFoundExceptionCustom,
   UnAuthorizedExceptionCustom,
 } from 'src/@core/exceptions';
-import { MongoError, Role } from 'src/@core/constants';
+import { MongoError, Role, UserStatus } from 'src/@core/constants';
 import { LawyerDetailService } from '../lawyer_details/lawyer-detail.service';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
+import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,15 +32,19 @@ export class UsersService {
   }
 
   public async createUser(userData: CreateLawyerDto | CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const rawPassword = userData.password || '123456789a';
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
     try {
-      console.log(userData);
       const createdUser = await this.create({
         ...userData,
         password: hashedPassword,
       });
       if (userData.role == Role.Lawyer) {
         this.lawyerDetailsService.create(userData);
+        return {
+          email: userData.email,
+          password: rawPassword,
+        };
       }
       return createdUser;
     } catch (error) {
@@ -52,6 +57,40 @@ export class UsersService {
     }
   }
 
+  async updateLawyer(lawyerData: UpdateLawyerDto) {
+    const filter = {
+      email: lawyerData.email,
+    };
+    const user = await this.userModel.findOne(filter);
+    if (!user) {
+      throw new NotFoundExceptionCustom('user not found');
+    }
+    const dataUpdate = {
+      firstName: lawyerData.firstName,
+      lastName: lawyerData.lastName,
+      phone: lawyerData.phone,
+      address: lawyerData.address,
+    };
+    await this.userModel.updateOne(filter, dataUpdate);
+
+    await this.lawyerDetailsService.updateOne(lawyerData);
+
+    return {
+      isSuccess: true,
+    };
+  }
+
+  async deleteUser(email: string) {
+    const user = await this.userModel.findOne({ email });
+
+    if (user.role == Role.Lawyer) {
+      await this.lawyerDetailsService.deleteOne(email);
+    }
+    await this.userModel.deleteOne({ email });
+    return {
+      isSuccess: true,
+    };
+  }
   async create(userData: CreateUserDto) {
     const createdUser = new this.userModel(userData);
     return createdUser.save();
@@ -61,7 +100,36 @@ export class UsersService {
     return this.userModel.find(filter);
   }
 
-  async updateUser() {}
+  async findAllLawyers() {
+    const lawyers = await this.userModel
+      .find({
+        role: Role.Lawyer,
+        status: UserStatus.ACTIVE,
+      })
+      .exec();
+    return Promise.all(
+      lawyers.map(async (lawyer) => {
+        const findDetail = await this.lawyerDetailsService.findByEmail(
+          lawyer.email,
+        );
+        const res = {
+          email: lawyer.email,
+          firstName: lawyer.firstName,
+          lastName: lawyer.lastName,
+          address: lawyer.address,
+          phone: lawyer.phone,
+          fullName: `${lawyer.firstName} ${lawyer.lastName}`,
+          description: findDetail.description,
+          majorFields: findDetail.majorFields,
+          ratingScore: findDetail.ratingScore,
+          userRatesScore: findDetail.userRatesScore,
+          yearExperiences: findDetail.yearExperiences,
+        };
+        return res;
+      }),
+    );
+  }
+
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
     const user = await this.getById(userId);
 
