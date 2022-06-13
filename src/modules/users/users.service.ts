@@ -51,7 +51,7 @@ export class UsersService {
           files.map(async (file) => {
             const fileName = file.originalname;
             const buffer = file.buffer;
-            const filePath = `${createdUser._id}/${fileName}`;
+            const filePath = `${createdUser._id}/evidences/eviden_${fileName}`;
             console.log(filePath);
             await this.firebaseStorageService.uploadImg(filePath, buffer);
             const url = await this.firebaseStorageService.getdownloadFile(
