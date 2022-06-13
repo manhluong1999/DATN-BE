@@ -8,6 +8,12 @@ export class CreateLawyerDto extends CreateUserDto {
   majorFields: Array<string>;
 
   @ApiProperty({
+    type: Array,
+    example: ['evidences 1'],
+  })
+  evidenceUrls: Array<string>;
+
+  @ApiProperty({
     type: String,
     example: 'description 1',
   })
@@ -30,6 +36,7 @@ export class CreateLawyerDto extends CreateUserDto {
     example: 4.9,
   })
   userRatesScore: number;
+
 }
 
 export default CreateLawyerDto;

@@ -15,12 +15,14 @@ import { MongoError, Role, UserStatus } from 'src/@core/constants';
 import { LawyerDetailService } from '../lawyer_details/lawyer-detail.service';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
+import { FirebaseStorageService } from '../firebase-storage/firebase-storage.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly lawyerDetailsService: LawyerDetailService,
+    private readonly firebaseStorageService: FirebaseStorageService,
   ) {}
 
   async getById(id: string) {
@@ -31,7 +33,10 @@ export class UsersService {
     return user;
   }
 
-  public async createUser(userData: CreateLawyerDto | CreateUserDto) {
+  public async createUser(
+    userData: CreateLawyerDto | CreateUserDto,
+    files: Express.Multer.File[] = [],
+  ) {
     const rawPassword =
       userData.password || Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
@@ -41,11 +46,22 @@ export class UsersService {
         password: hashedPassword,
       });
       if (userData.role == Role.Lawyer) {
-        this.lawyerDetailsService.create(userData);
-        return {
-          email: userData.email,
-          password: rawPassword,
-        };
+        const evidenceUrls = [];
+        await Promise.all(
+          files.map(async (file) => {
+            const fileName = file.originalname;
+            const buffer = file.buffer;
+            const filePath = `${createdUser._id}/${fileName}`;
+            console.log(filePath);
+            await this.firebaseStorageService.uploadImg(filePath, buffer);
+            const url = await this.firebaseStorageService.getdownloadFile(
+              filePath,
+            );
+            evidenceUrls.push(url);
+            console.log(evidenceUrls);
+          }),
+        );
+        await this.lawyerDetailsService.create({ ...userData, evidenceUrls });
       }
       return createdUser;
     } catch (error) {

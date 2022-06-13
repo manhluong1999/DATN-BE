@@ -22,6 +22,9 @@ export class LawyerDetail {
   majorFields: Array<string>;
 
   @Prop()
+  evidenceUrls: Array<string>;
+
+  @Prop()
   description: string;
 
   @Prop()

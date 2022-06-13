@@ -8,17 +8,21 @@ import {
   Put,
   Query,
   Req,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import JwtAuthenticationGuard from '../authentication/guards/jwt-authentication.guard';
 import RoleGuard from '../authentication/guards/role.guard';
 import { Role } from 'src/@core/constants';
 import CreateUserDto from './dto/createUser.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
 import RequestWithUser from '../authentication/interfaces/requestWithUser.interface';
+import { validateFileUpload } from 'src/@core/utils/validateFile';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class UsersController {
@@ -38,14 +42,24 @@ export class UsersController {
     return this.usersService.findAllLawyers();
   }
 
-  @UseGuards(RoleGuard([Role.Admin]))
-  @ApiBearerAuth('JWT')
+  // @UseGuards(RoleGuard([Role.Admin]))
+  // @ApiBearerAuth('JWT')
+  @UseInterceptors(FilesInterceptor('files'))
+  @ApiConsumes('multipart/form-data')
   @Post('lawyer')
-  async createLawyer(@Body() createLawyerDto: CreateLawyerDto) {
-    return this.usersService.createUser({
-      ...createLawyerDto,
-      role: Role.Lawyer,
-    });
+  async createLawyer(
+    @Body() createLawyerDto: CreateLawyerDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    validateFileUpload(files);
+    console.log(files.length);
+    return this.usersService.createUser(
+      {
+        ...createLawyerDto,
+        role: Role.Lawyer,
+      },
+      files,
+    );
   }
 
   @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
