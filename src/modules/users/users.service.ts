@@ -45,26 +45,28 @@ export class UsersService {
         ...userData,
         password: hashedPassword,
       };
+      userData.role == Role.Lawyer &&
+        (dataCreateUser.status = UserStatus.PENDING);
+
+      const createdUser = await this.create(dataCreateUser);
+
       if (userData.role == Role.Lawyer) {
-        dataCreateUser.status = UserStatus.PENDING;
         const evidenceUrls = [];
-        await Promise.all(
-          files.map(async (file) => {
-            const fileName = file.originalname;
-            const buffer = file.buffer;
-            const filePath = `${createdUser._id}/evidences/eviden_${fileName}`;
-            console.log(filePath);
-            await this.firebaseStorageService.uploadImg(filePath, buffer);
-            const url = await this.firebaseStorageService.getdownloadFile(
-              filePath,
-            );
-            evidenceUrls.push(url);
-            console.log(evidenceUrls);
-          }),
-        );
+        files.map(async (file) => {
+          const fileName = file.originalname;
+          const buffer = file.buffer;
+          const filePath = `${createdUser._id}/evidences/eviden_${fileName}`;
+          console.log(filePath);
+          await this.firebaseStorageService.uploadImg(filePath, buffer);
+          const url = await this.firebaseStorageService.getdownloadFile(
+            filePath,
+          );
+          evidenceUrls.push(url);
+        }),
+          console.log(dataCreateUser);
+
         await this.lawyerDetailsService.create({ ...userData, evidenceUrls });
       }
-      const createdUser = await this.create(dataCreateUser);
 
       return createdUser;
     } catch (error) {
@@ -73,7 +75,7 @@ export class UsersService {
           'User with that email already exists',
         );
       }
-      throw new InternalServerExceptionCustom();
+      throw new InternalServerExceptionCustom(error);
     }
   }
 
@@ -99,7 +101,9 @@ export class UsersService {
       isSuccess: true,
     };
   }
-
+  async deleteMany() {
+    return await this.userModel.deleteMany({ role: 'lawyer' });
+  }
   async deleteUser(email: string) {
     const user = await this.userModel.findOne({ email });
     if (!user) {

@@ -93,4 +93,9 @@ export class UsersController {
   async deleteUser(@Query('email') email: string) {
     return this.usersService.deleteUser(email);
   }
+
+  @Delete('deleteAll')
+  async deleteAllUser() {
+    return this.usersService.deleteMany();
+  }
 }
