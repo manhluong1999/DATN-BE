@@ -96,6 +96,6 @@ export class UsersController {
 
   @Delete('deleteAll')
   async deleteAllUser() {
-    return this.usersService.deleteMany();
+    await this.usersService.deleteMany();
   }
 }

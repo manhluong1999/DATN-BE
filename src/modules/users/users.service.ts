@@ -40,6 +40,8 @@ export class UsersService {
     const rawPassword =
       userData.password || Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
+    console.log(userData);
+
     try {
       const dataCreateUser = {
         ...userData,
@@ -102,7 +104,8 @@ export class UsersService {
     };
   }
   async deleteMany() {
-    return this.lawyerDetailsService.deleteMany();
+    this.lawyerDetailsService.deleteMany();
+    await this.userModel.deleteMany({ role: Role.User });
     return await this.userModel.deleteMany({ role: Role.Lawyer });
   }
   async deleteUser(email: string) {
