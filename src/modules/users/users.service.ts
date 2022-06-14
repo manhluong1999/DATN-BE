@@ -41,11 +41,12 @@ export class UsersService {
       userData.password || Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
     try {
-      const createdUser = await this.create({
+      const dataCreateUser = {
         ...userData,
         password: hashedPassword,
-      });
+      };
       if (userData.role == Role.Lawyer) {
+        dataCreateUser.status = UserStatus.PENDING;
         const evidenceUrls = [];
         await Promise.all(
           files.map(async (file) => {
@@ -63,6 +64,8 @@ export class UsersService {
         );
         await this.lawyerDetailsService.create({ ...userData, evidenceUrls });
       }
+      const createdUser = await this.create(dataCreateUser);
+
       return createdUser;
     } catch (error) {
       if (error?.code === MongoError.DuplicateKey) {
@@ -126,11 +129,11 @@ export class UsersService {
       isSuccess: true,
     };
   }
-  async findAllLawyers() {
+  async findAllLawyers(status) {
     const lawyers = await this.userModel
       .find({
         role: Role.Lawyer,
-        status: UserStatus.ACTIVE,
+        status,
       })
       .exec();
     return Promise.all(
@@ -145,11 +148,11 @@ export class UsersService {
           address: lawyer.address,
           phone: lawyer.phone,
           fullName: `${lawyer.firstName} ${lawyer.lastName}`,
-          description: findDetail.description,
-          majorFields: findDetail.majorFields,
-          ratingScore: findDetail.ratingScore,
-          userRatesScore: findDetail.userRatesScore,
-          yearExperiences: findDetail.yearExperiences,
+          description: findDetail?.description,
+          majorFields: findDetail?.majorFields,
+          ratingScore: findDetail?.ratingScore,
+          userRatesScore: findDetail?.userRatesScore,
+          yearExperiences: findDetail?.yearExperiences,
         };
         return res;
       }),

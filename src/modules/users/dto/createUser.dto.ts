@@ -1,4 +1,4 @@
-import { Role } from 'src/@core/constants';
+import { Role, UserStatus } from 'src/@core/constants';
 import { IsEmail, IsString, IsNotEmpty, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
@@ -39,6 +39,11 @@ export class CreateUserDto {
     example: 'lawyer',
   })
   role?: Role;
+
+  @ApiProperty({
+    example: UserStatus.ACTIVE,
+  })
+  status?: UserStatus;
 }
 
 export default CreateUserDto;

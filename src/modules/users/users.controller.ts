@@ -38,8 +38,8 @@ export class UsersController {
   // @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
   // @ApiBearerAuth('JWT')
   @Get('lawyer')
-  async findAllLawyer() {
-    return this.usersService.findAllLawyers();
+  async findAllLawyer(@Query('status') status: UserStatus) {
+    return this.usersService.findAllLawyers(status);
   }
 
   // @UseGuards(RoleGuard([Role.Admin]))
