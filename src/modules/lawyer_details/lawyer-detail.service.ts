@@ -16,8 +16,6 @@ export class LawyerDetailService {
   ) {}
 
   async create(createLawyerDto: CreateLawyerDto | CreateUserDto | any) {
-    createLawyerDto.majorFields = JSON.parse(createLawyerDto.majorFields);
-
     const createdLawyer = new this.model({
       ...createLawyerDto,
       userEmail: createLawyerDto.email,
