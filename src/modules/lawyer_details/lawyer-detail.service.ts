@@ -15,7 +15,9 @@ export class LawyerDetailService {
     @InjectModel(LawyerDetail.name) private model: Model<LawyerDetailDocument>,
   ) {}
 
-  async create(createLawyerDto: CreateLawyerDto | CreateUserDto) {
+  async create(createLawyerDto: CreateLawyerDto | CreateUserDto | any) {
+    createLawyerDto.majorFields = JSON.parse(createLawyerDto.majorFields);
+
     const createdLawyer = new this.model({
       ...createLawyerDto,
       userEmail: createLawyerDto.email,
@@ -39,7 +41,7 @@ export class LawyerDetailService {
     return this.model.deleteMany();
   }
   async findByEmail(email: string) {
-    const res = await this.model.findOne({ userEmail: email }).exec();
+    const res = await this.model.findOne({ userEmail: email });
     return res;
   }
 }

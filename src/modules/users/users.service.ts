@@ -21,7 +21,7 @@ import { FirebaseStorageService } from '../firebase-storage/firebase-storage.ser
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private readonly lawyerDetailsService: LawyerDetailService,
+    public readonly lawyerDetailsService: LawyerDetailService,
     private readonly firebaseStorageService: FirebaseStorageService,
   ) {}
 
@@ -52,19 +52,19 @@ export class UsersService {
 
       if (userData.role == Role.Lawyer) {
         const evidenceUrls = [];
-        files.map(async (file) => {
-          const fileName = file.originalname;
-          const buffer = file.buffer;
-          const filePath = `${createdUser._id}/evidences/eviden_${fileName}`;
-          console.log(filePath);
-          await this.firebaseStorageService.uploadImg(filePath, buffer);
-          const url = await this.firebaseStorageService.getdownloadFile(
-            filePath,
-          );
-          evidenceUrls.push(url);
-        }),
-          console.log(dataCreateUser);
-
+        await Promise.all(
+          files.map(async (file) => {
+            const fileName = file.originalname;
+            const buffer = file.buffer;
+            const filePath = `${createdUser._id}/evidences/eviden_${fileName}`;
+            console.log(filePath);
+            await this.firebaseStorageService.uploadImg(filePath, buffer);
+            const url = await this.firebaseStorageService.getdownloadFile(
+              filePath,
+            );
+            evidenceUrls.push(url);
+          }),
+        );
         await this.lawyerDetailsService.create({ ...userData, evidenceUrls });
       }
 

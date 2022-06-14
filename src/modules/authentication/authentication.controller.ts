@@ -8,6 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { Role } from 'src/@core/constants';
+import { UsersService } from '../users/users.service';
 import { AuthenticationService } from './authentication.service';
 import LogInDto from './dto/logIn.dto';
 import RefreshTokenDto from './dto/refresh-token.dto';
@@ -19,7 +21,10 @@ import RequestWithUser from './interfaces/requestWithUser.interface';
 
 @Controller()
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
@@ -37,8 +42,27 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   @ApiBearerAuth('JWT')
-  authenticate(@Request() request: RequestWithUser) {
+  async authenticate(@Request() request: RequestWithUser) {
     const user = request.user;
+    if (user.role == Role.Lawyer) {
+      const data = await this.userService.lawyerDetailsService.findByEmail(
+        user.email,
+      );
+      return {
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        imgUrl: user.imgUrl,
+        fullName: user.fullName,
+        phone: user.phone,
+        status: user.status,
+        majorFields: data.majorFields,
+        description: data.description,
+        ratingScore: data.ratingScore,
+        yearExperiences: data.yearExperiences,
+      };
+    }
     return user;
   }
 

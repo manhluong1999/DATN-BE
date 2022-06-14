@@ -36,7 +36,6 @@ export class CreateLawyerDto extends CreateUserDto {
     example: 4.9,
   })
   userRatesScore: number;
-
 }
 
 export default CreateLawyerDto;
