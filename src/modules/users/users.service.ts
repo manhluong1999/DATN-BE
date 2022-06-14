@@ -119,6 +119,13 @@ export class UsersService {
     return this.userModel.find(filter);
   }
 
+  async approveLawyer(email, status) {
+    await this.userModel.updateOne({ email }, { email, status });
+
+    return {
+      isSuccess: true,
+    };
+  }
   async findAllLawyers() {
     const lawyers = await this.userModel
       .find({
@@ -149,6 +156,14 @@ export class UsersService {
     );
   }
 
+  async findByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (user) {
+      return user;
+    }
+    throw new NotFoundExceptionCustom('User with this email does not exist');
+  }
+
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
     const user = await this.getById(userId);
 
@@ -171,13 +186,5 @@ export class UsersService {
     if (!user) {
       throw new NotFoundExceptionCustom('USER NOT FOUND');
     }
-  }
-
-  async findByEmail(email: string) {
-    const user = await this.userModel.findOne({ email });
-    if (user) {
-      return user;
-    }
-    throw new NotFoundExceptionCustom('User with this email does not exist');
   }
 }

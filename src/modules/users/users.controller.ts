@@ -15,7 +15,7 @@ import {
 import { UsersService } from './users.service';
 import JwtAuthenticationGuard from '../authentication/guards/jwt-authentication.guard';
 import RoleGuard from '../authentication/guards/role.guard';
-import { Role } from 'src/@core/constants';
+import { Role, UserStatus } from 'src/@core/constants';
 import CreateUserDto from './dto/createUser.dto';
 import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
@@ -36,7 +36,7 @@ export class UsersController {
   }
 
   // @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
-  @ApiBearerAuth('JWT')
+  // @ApiBearerAuth('JWT')
   @Get('lawyer')
   async findAllLawyer() {
     return this.usersService.findAllLawyers();
@@ -60,6 +60,16 @@ export class UsersController {
       },
       files,
     );
+  }
+
+  @UseGuards(RoleGuard([Role.Admin]))
+  @ApiBearerAuth('JWT')
+  @Put('lawyer/approve')
+  async approveLawyer(
+    @Query('email') email: string,
+    @Query('status') status: UserStatus,
+  ) {
+    return this.usersService.approveLawyer(email, status);
   }
 
   @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
