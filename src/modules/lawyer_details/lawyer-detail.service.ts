@@ -34,6 +34,10 @@ export class LawyerDetailService {
   async deleteOne(userEmail: string) {
     return this.model.deleteOne({ userEmail });
   }
+
+  async deleteMany() {
+    return this.model.deleteMany();
+  }
   async findByEmail(email: string) {
     const res = await this.model.findOne({ userEmail: email }).exec();
     return res;

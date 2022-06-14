@@ -102,7 +102,8 @@ export class UsersService {
     };
   }
   async deleteMany() {
-    return await this.userModel.deleteMany({ role: 'lawyer' });
+    return this.lawyerDetailsService.deleteMany();
+    return await this.userModel.deleteMany({ role: Role.Lawyer });
   }
   async deleteUser(email: string) {
     const user = await this.userModel.findOne({ email });
@@ -127,6 +128,13 @@ export class UsersService {
   }
 
   async approveLawyer(email, status) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      return {
+        code: 404,
+        message: 'Email Not Found',
+      };
+    }
     await this.userModel.updateOne({ email }, { email, status });
 
     return {
