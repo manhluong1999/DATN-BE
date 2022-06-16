@@ -100,7 +100,7 @@ export class UsersService {
       phone: userData.phone,
       address: userData.address,
     };
-    if (files.imgUrl.length) {
+    if (files.imgUrl && files.imgUrl.length) {
       const fileName = files.imgUrl[0].originalname;
       const buffer = files.imgUrl[0].buffer;
       const filePath = `${user._id}/avatar/avatar_${fileName}`;
@@ -113,19 +113,21 @@ export class UsersService {
 
     if (user.role == Role.Lawyer) {
       const evidenceUrls = [];
-      await Promise.all(
-        files.evidenceUrls.map(async (file) => {
-          const fileName = file.originalname;
-          const buffer = file.buffer;
-          const filePath = `${user._id}/evidences/eviden_${fileName}`;
-          console.log(filePath);
-          await this.firebaseStorageService.uploadImg(filePath, buffer);
-          const url = await this.firebaseStorageService.getdownloadFile(
-            filePath,
-          );
-          evidenceUrls.push(url);
-        }),
-      );
+      if (files.evidenceUrls) {
+        await Promise.all(
+          files.evidenceUrls.map(async (file) => {
+            const fileName = file.originalname;
+            const buffer = file.buffer;
+            const filePath = `${user._id}/evidences/eviden_${fileName}`;
+            console.log(filePath);
+            await this.firebaseStorageService.uploadImg(filePath, buffer);
+            const url = await this.firebaseStorageService.getdownloadFile(
+              filePath,
+            );
+            evidenceUrls.push(url);
+          }),
+        );
+      }
       await this.lawyerDetailsService.updateOne({
         ...userData,
         email: user.email,
