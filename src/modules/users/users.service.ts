@@ -117,7 +117,7 @@ export class UsersService {
         email: user.email,
       };
       const evidenceUrls = [];
-      if (files.evidenceUrls) {
+      if (files.evidenceUrls && files.evidenceUrls.length == 2) {
         await Promise.all(
           files.evidenceUrls.map(async (file) => {
             const fileName = file.originalname;
