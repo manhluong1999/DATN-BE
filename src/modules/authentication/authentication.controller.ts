@@ -61,6 +61,7 @@ export class AuthenticationController {
         description: data.description,
         ratingScore: data.ratingScore,
         yearExperiences: data.yearExperiences,
+        evidenceUrls: data.evidenceUrls,
       };
     }
     return user;
