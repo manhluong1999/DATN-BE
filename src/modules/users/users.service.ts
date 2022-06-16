@@ -81,23 +81,57 @@ export class UsersService {
     }
   }
 
-  async updateLawyer(lawyerData: UpdateLawyerDto) {
+  async updateUserInfo(
+    user,
+    userData: UpdateLawyerDto,
+    files: {
+      evidenceUrls?: Express.Multer.File[];
+      imgUrl?: Express.Multer.File[];
+    },
+  ) {
     const filter = {
-      email: lawyerData.email,
+      email: user.email,
     };
-    const user = await this.userModel.findOne(filter);
-    if (!user) {
-      throw new NotFoundExceptionCustom('user not found');
+
+    const dataUpdate: any = {
+      email: user.email,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phone: userData.phone,
+      address: userData.address,
+    };
+    if (files.imgUrl.length) {
+      const fileName = files.imgUrl[0].originalname;
+      const buffer = files.imgUrl[0].buffer;
+      const filePath = `${user._id}/avatar/avatar_${fileName}`;
+      console.log(filePath);
+      await this.firebaseStorageService.uploadImg(filePath, buffer);
+      const url = await this.firebaseStorageService.getdownloadFile(filePath);
+      dataUpdate.imgUrl = url;
     }
-    const dataUpdate = {
-      firstName: lawyerData.firstName,
-      lastName: lawyerData.lastName,
-      phone: lawyerData.phone,
-      address: lawyerData.address,
-    };
     await this.userModel.updateOne(filter, dataUpdate);
 
-    await this.lawyerDetailsService.updateOne(lawyerData);
+    if (user.role == Role.Lawyer) {
+      const evidenceUrls = [];
+      await Promise.all(
+        files.evidenceUrls.map(async (file) => {
+          const fileName = file.originalname;
+          const buffer = file.buffer;
+          const filePath = `${user._id}/evidences/eviden_${fileName}`;
+          console.log(filePath);
+          await this.firebaseStorageService.uploadImg(filePath, buffer);
+          const url = await this.firebaseStorageService.getdownloadFile(
+            filePath,
+          );
+          evidenceUrls.push(url);
+        }),
+      );
+      await this.lawyerDetailsService.updateOne({
+        ...userData,
+        email: user.email,
+        evidenceUrls,
+      });
+    }
 
     return {
       isSuccess: true,

@@ -1,7 +1,7 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { UpdateUserDto } from 'src/modules/users/dto/updateUser.dto';
 
-export class UpdateLawyerDto extends OmitType(UpdateUserDto, ['imgUrl']) {
+export class UpdateLawyerDto extends UpdateUserDto {
   @ApiProperty({
     type: Array,
     example: ['major1'],

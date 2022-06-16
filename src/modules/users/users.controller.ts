@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   Req,
+  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -22,7 +23,10 @@ import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
 import RequestWithUser from '../authentication/interfaces/requestWithUser.interface';
 import { validateFileUpload } from 'src/@core/utils/validateFile';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 
 @Controller()
 export class UsersController {
@@ -73,19 +77,33 @@ export class UsersController {
     return this.usersService.approveLawyer(email, status, ratingScore);
   }
 
-  @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
-  @ApiBearerAuth('JWT')
-  @Put('lawyer')
-  async updateLawyer(@Body() updateLawyerDto: UpdateLawyerDto) {
-    return this.usersService.updateLawyer(updateLawyerDto);
-  }
-
   @UseGuards(RoleGuard([Role.User, Role.Lawyer]))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'evidenceUrls', maxCount: 2 },
+      { name: 'imgUrl', maxCount: 1 },
+    ]),
+  )
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth('JWT')
-  @Put()
-  async updateUser(@Req() request: RequestWithUser) {
+  @Put('update')
+  async updateUser(
+    @Req() request: RequestWithUser,
+    @Body() updateLawyerDto: UpdateLawyerDto,
+    @UploadedFiles()
+    files: {
+      evidenceUrls?: Express.Multer.File[];
+      imgUrl?: Express.Multer.File[];
+    },
+  ) {
+    console.log(updateLawyerDto);
     console.log(request.user);
-    return request.user;
+    console.log(files);
+    return this.usersService.updateUserInfo(
+      request.user,
+      updateLawyerDto,
+      files,
+    );
   }
 
   @UseGuards(RoleGuard([Role.Admin]))

@@ -23,7 +23,7 @@ export class LawyerDetailService {
     return createdLawyer.save();
   }
 
-  async updateOne(updateLawyerDto: UpdateLawyerDto) {
+  async updateOne(updateLawyerDto: UpdateLawyerDto | any) {
     return this.model.updateOne(
       { userEmail: updateLawyerDto.email },
       { ...updateLawyerDto, userEmail: updateLawyerDto.email },

@@ -7,7 +7,7 @@ export class UpdateUserDto {
     example: 'manhluong@gmail.com',
   })
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiProperty({
     type: String,
