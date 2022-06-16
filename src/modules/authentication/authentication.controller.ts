@@ -56,6 +56,7 @@ export class AuthenticationController {
         imgUrl: user.imgUrl,
         fullName: user.fullName,
         phone: user.phone,
+        address: user.address,
         status: user.status,
         majorFields: data.majorFields,
         description: data.description,
