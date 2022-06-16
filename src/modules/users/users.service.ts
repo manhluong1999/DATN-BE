@@ -112,6 +112,10 @@ export class UsersService {
     await this.userModel.updateOne(filter, dataUpdate);
 
     if (user.role == Role.Lawyer) {
+      const dataUpdate: any = {
+        ...userData,
+        email: user.email,
+      };
       const evidenceUrls = [];
       if (files.evidenceUrls) {
         await Promise.all(
@@ -127,12 +131,9 @@ export class UsersService {
             evidenceUrls.push(url);
           }),
         );
+        dataUpdate.evidenceUrls = evidenceUrls;
       }
-      await this.lawyerDetailsService.updateOne({
-        ...userData,
-        email: user.email,
-        evidenceUrls,
-      });
+      await this.lawyerDetailsService.updateOne(dataUpdate);
     }
 
     return {
