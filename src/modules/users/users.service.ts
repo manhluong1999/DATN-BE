@@ -168,6 +168,7 @@ export class UsersService {
           ratingScore: findDetail?.ratingScore,
           userRatesScore: findDetail?.userRatesScore,
           yearExperiences: findDetail?.yearExperiences,
+          evidenceUrls: findDetail?.evidenceUrls,
         };
         return res;
       }),
