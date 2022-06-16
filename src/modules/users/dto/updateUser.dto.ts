@@ -15,7 +15,7 @@ export class UpdateUserDto {
   })
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  firstName?: string;
 
   @ApiProperty({
     type: String,
@@ -23,23 +23,23 @@ export class UpdateUserDto {
   })
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty({
     type: String,
     example: '0123456789',
   })
-  phone: string;
+  phone?: string;
 
   @ApiProperty({
     type: String,
     example: 'Ha noi',
   })
-  address: string;
+  address?: string;
 
   @ApiProperty({
     type: String,
     example: 'http:image/url',
   })
-  imgUrl: string;
+  imgUrl?: string;
 }

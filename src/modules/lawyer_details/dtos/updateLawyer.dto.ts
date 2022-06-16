@@ -6,31 +6,31 @@ export class UpdateLawyerDto extends OmitType(UpdateUserDto, ['imgUrl']) {
     type: Array,
     example: ['major1'],
   })
-  majorFields: Array<string>;
+  majorFields?: Array<string>;
 
   @ApiProperty({
     type: String,
     example: 'description 1',
   })
-  description: string;
+  description?: string;
 
   @ApiProperty({
     type: Number,
     example: 9.6,
   })
-  ratingScore: number;
+  ratingScore?: number;
 
   @ApiProperty({
     type: Number,
     example: 10,
   })
-  yearExperiences: number;
+  yearExperiences?: number;
 
   @ApiProperty({
     type: Number,
     example: 4.9,
   })
-  userRatesScore: number;
+  userRatesScore?: number;
 }
 
 export default UpdateLawyerDto;

@@ -68,8 +68,9 @@ export class UsersController {
   async approveLawyer(
     @Query('email') email: string,
     @Query('status') status: UserStatus,
+    @Query('ratingScore') ratingScore?: number,
   ) {
-    return this.usersService.approveLawyer(email, status);
+    return this.usersService.approveLawyer(email, status, ratingScore);
   }
 
   @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))

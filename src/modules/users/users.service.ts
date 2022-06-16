@@ -130,16 +130,20 @@ export class UsersService {
     return this.userModel.find(filter);
   }
 
-  async approveLawyer(email, status) {
+  async approveLawyer(email, status, ratingScore: number) {
     const user = await this.userModel.findOne({ email });
+    console.log(email);
     if (!user) {
       return {
         code: 404,
         message: 'Email Not Found',
       };
     }
-    await this.userModel.updateOne({ email }, { email, status });
-
+    const updateData = { email, status };
+    await this.userModel.updateOne({ email }, updateData);
+    if (ratingScore) {
+      await this.lawyerDetailsService.updateOne({ email, ratingScore });
+    }
     return {
       isSuccess: true,
     };
