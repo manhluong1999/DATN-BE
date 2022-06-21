@@ -203,6 +203,7 @@ export class UsersService {
           lastName: lawyer.lastName,
           address: lawyer.address,
           phone: lawyer.phone,
+          imgUrl: lawyer.imgUrl,
           fullName: `${lawyer.firstName} ${lawyer.lastName}`,
           description: findDetail?.description,
           majorFields: findDetail?.majorFields,
