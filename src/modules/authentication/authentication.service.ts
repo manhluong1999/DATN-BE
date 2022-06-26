@@ -25,6 +25,15 @@ export class AuthenticationService {
     registrationData.role = undefined;
     return this.usersService.createUser(registrationData);
   }
+  public async getUserFromAuthenticationToken(token: string) {
+    const payload: TokenPayload = this.jwtService.verify(token, {
+      secret: config.jwt.access_token_secret,
+    });
+    if (payload.userId) {
+      return this.usersService.getById(payload.userId);
+    }
+  }
+
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
       const user = await this.usersService.findByEmail(email);

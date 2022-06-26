@@ -41,13 +41,16 @@ export class UsersController {
 
   // @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
   // @ApiBearerAuth('JWT')
-  @Get('lawyer')
+  @Get('lawyers')
   async findAllLawyer(@Query('status') status: UserStatus) {
     return this.usersService.findAllLawyers(status);
   }
 
-  // @UseGuards(RoleGuard([Role.Admin]))
-  // @ApiBearerAuth('JWT')
+  @Get('lawyer')
+  async findOneLawyer(@Query('id') id: string) {
+    return this.usersService.findOneLawyer(id);
+  }
+
   @UseInterceptors(FilesInterceptor('files'))
   @ApiConsumes('multipart/form-data')
   @Post('lawyer')

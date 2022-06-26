@@ -198,6 +198,7 @@ export class UsersService {
           lawyer.email,
         );
         const res = {
+          id: lawyer.id,
           email: lawyer.email,
           firstName: lawyer.firstName,
           lastName: lawyer.lastName,
@@ -215,6 +216,30 @@ export class UsersService {
         return res;
       }),
     );
+  }
+
+  async findOneLawyer(id) {
+    const lawyer = await this.getById(id);
+
+    const findDetail = await this.lawyerDetailsService.findByEmail(
+      lawyer.email,
+    );
+    const res = {
+      email: lawyer.email,
+      firstName: lawyer.firstName,
+      lastName: lawyer.lastName,
+      address: lawyer.address,
+      phone: lawyer.phone,
+      imgUrl: lawyer.imgUrl,
+      fullName: `${lawyer.firstName} ${lawyer.lastName}`,
+      description: findDetail?.description,
+      majorFields: findDetail?.majorFields,
+      ratingScore: findDetail?.ratingScore,
+      userRatesScore: findDetail?.userRatesScore,
+      yearExperiences: findDetail?.yearExperiences,
+      evidenceUrls: findDetail?.evidenceUrls,
+    };
+    return res;
   }
 
   async findByEmail(email: string) {
