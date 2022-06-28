@@ -53,6 +53,9 @@ export class User {
   @Prop()
   imgUrl: string;
 
+  @Prop()
+  socketId: string;
+
   @Prop({
     default: UserStatus.ACTIVE,
     enum: UserStatus,

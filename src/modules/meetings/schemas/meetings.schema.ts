@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { Exclude, Transform } from 'class-transformer';
+import { MeetingStatus } from 'src/@core/constants';
 
 export type MeetingDocument = Meeting & Document;
 
@@ -22,6 +23,15 @@ export class Meeting {
 
   @Prop()
   meetingDate: string;
+
+  @Prop({
+    default: MeetingStatus.PENDING,
+    enum: MeetingStatus,
+  })
+  status: MeetingStatus;
+
+  @Prop()
+  timeCode: number;
 
   @Prop()
   startAt: Date;

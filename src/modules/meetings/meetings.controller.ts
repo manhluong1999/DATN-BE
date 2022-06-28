@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Role } from 'src/@core/constants';
+import { MeetingStatus, Role } from 'src/@core/constants';
 import RoleGuard from '../authentication/guards/role.guard';
 import RequestWithUser from '../authentication/interfaces/requestWithUser.interface';
 import CreateMeetingDto from './dto/create-meeting.dto';
@@ -20,14 +20,26 @@ import { MeetingService } from './meetings.service';
 export class MeetingController {
   constructor(private readonly meetingService: MeetingService) {}
 
-  @Get()
-  async getListFreeMeeting(
+  @Get('lawyer')
+  async getListFreeMeetingLawyer(
     @Query('lawyerId') lawyerId: string,
     @Query('meetingDate') meetingDate: string,
   ) {
     return this.meetingService.getListFreeMeetingsByLawyerId(
       lawyerId,
       meetingDate,
+    );
+  }
+  @UseGuards(RoleGuard([Role.User]))
+  @ApiBearerAuth('JWT')
+  @Get('user')
+  async getListMeetingUser(
+    @Req() request: RequestWithUser,
+    @Query('status') status: MeetingStatus,
+  ) {
+    return this.meetingService.getListMeetingOfUserByStatus(
+      request.user._id.toString(),
+      status,
     );
   }
 
