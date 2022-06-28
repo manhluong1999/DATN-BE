@@ -39,8 +39,6 @@ export class UsersController {
     return this.usersService.findAll({ role: Role.User });
   }
 
-  // @UseGuards(RoleGuard([Role.Admin, Role.Lawyer]))
-  // @ApiBearerAuth('JWT')
   @Get('lawyers')
   async findAllLawyer(@Query('status') status: UserStatus) {
     return this.usersService.findAllLawyers(status);

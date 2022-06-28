@@ -225,6 +225,7 @@ export class UsersService {
       lawyer.email,
     );
     const res = {
+      id: lawyer.id,
       email: lawyer.email,
       firstName: lawyer.firstName,
       lastName: lawyer.lastName,
