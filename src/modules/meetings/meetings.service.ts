@@ -5,18 +5,16 @@ import { Meeting, MeetingDocument } from './schemas/meetings.schema';
 import moment from 'moment';
 import { difference } from 'lodash';
 import CreateMeetingDto from './dto/create-meeting.dto';
-import { MeetingStatus } from 'src/@core/constants';
+import { MeetingStatus, Role } from 'src/@core/constants';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class MeetingService {
   constructor(
     @InjectModel(Meeting.name) private model: Model<MeetingDocument>,
+    private readonly userService: UsersService,
   ) {}
 
-  getTimeCodeByStartTime(startTime: Date) {
-    const code = (startTime.getHours() - 8) / 2 + 1;
-    return code;
-  }
   getDataByTimeCode(timeCode: number, meetingDate: string) {
     const startHour = (timeCode - 1) * 2 + 8;
     const endHour = startHour + 2;
@@ -47,10 +45,18 @@ export class MeetingService {
   async createMeeting(createMeetingDto: CreateMeetingDto, userId) {
     const { lawyerId, meetingDate, timeCode } = createMeetingDto;
 
+    const findLawyer = await this.userService.getById(lawyerId);
+
+    if (!findLawyer || findLawyer.role != Role.Lawyer) {
+      return {
+        isSuccess: false,
+        message: 'Lawyer id is not valid',
+      };
+    }
     if (timeCode > 5 || timeCode < 1) {
       return {
         isSuccess: false,
-        message: 'Time code not valid',
+        message: 'Time code is not valid',
       };
     }
 
@@ -74,4 +80,6 @@ export class MeetingService {
       isSuccess: true,
     };
   }
+
+  async updateMeeting() {}
 }

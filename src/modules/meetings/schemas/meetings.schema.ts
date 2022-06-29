@@ -34,6 +34,9 @@ export class Meeting {
   timeCode: number;
 
   @Prop()
+  price: number;
+
+  @Prop()
   startAt: Date;
 
   @Prop()
