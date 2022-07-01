@@ -7,6 +7,7 @@ import { ROUTERS } from './@core/config';
 import { initFirebase } from './@core/config/firebase-config';
 import { HttpErrorFilter } from './@core/filters';
 import { LoggingInterceptor } from './@core/interceptors';
+import { AppGateway } from './modules/gateways/app.gateway';
 import { DatabaseModule } from './database/database.module';
 import { MODULES } from './modules';
 
@@ -33,6 +34,7 @@ initFirebase();
   ],
   controllers: [],
   providers: [
+    AppGateway,
     {
       provide: APP_FILTER,
       useClass: HttpErrorFilter,

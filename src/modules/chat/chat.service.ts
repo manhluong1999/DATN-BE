@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schemas/message.schema';
 import { Model } from 'mongoose';
 import { User } from '../users/schemas/user.schema';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ChatService {
@@ -37,6 +38,7 @@ export class ChatService {
     if (!user) {
       throw new WsException('Invalid credentials.');
     }
+    await this.authenticationService.saveSocketId(socket.id, user.id);
     return user;
   }
 }

@@ -28,8 +28,8 @@ export class Conversation {
   receiverId: string;
 }
 
-const MessageSchema = SchemaFactory.createForClass(Message);
+const ConversationSchema = SchemaFactory.createForClass(Message);
 
 // MessageSchema.index({ userEmail: 1 });
 
-export { MessageSchema };
+export { ConversationSchema };

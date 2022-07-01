@@ -49,6 +49,7 @@ export class AuthenticationController {
         user.email,
       );
       return {
+        id: user._id,
         email: user.email,
         role: user.role,
         firstName: user.firstName,

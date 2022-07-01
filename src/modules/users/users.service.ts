@@ -16,6 +16,7 @@ import { LawyerDetailService } from '../lawyer_details/lawyer-detail.service';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
 import { FirebaseStorageService } from '../firebase-storage/firebase-storage.service';
+import { MAPPING_MAJOR_FIELD_CODE } from 'src/@core/constants/constant';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,9 @@ export class UsersService {
     public readonly lawyerDetailsService: LawyerDetailService,
     private readonly firebaseStorageService: FirebaseStorageService,
   ) {}
-
+  async saveSocketIdByUserId(socketId: string, userId: string) {
+    return this.userModel.findByIdAndUpdate(userId, { socketId });
+  }
   async getById(id: string) {
     const user = await this.userModel.findById(id);
     if (!user) {
@@ -207,7 +210,9 @@ export class UsersService {
           imgUrl: lawyer.imgUrl,
           fullName: `${lawyer.firstName} ${lawyer.lastName}`,
           description: findDetail?.description,
-          majorFields: findDetail?.majorFields,
+          majorFields: findDetail?.majorFields.map(
+            (item) => MAPPING_MAJOR_FIELD_CODE[item],
+          ),
           ratingScore: findDetail?.ratingScore,
           userRatesScore: findDetail?.userRatesScore,
           yearExperiences: findDetail?.yearExperiences,

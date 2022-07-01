@@ -20,7 +20,9 @@ export class AuthenticationService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
-
+  public async saveSocketId(socketId: string, userId: string) {
+    await this.usersService.saveSocketIdByUserId(userId, socketId);
+  }
   public async register(registrationData: CreateUserDto) {
     registrationData.role = undefined;
     return this.usersService.createUser(registrationData);
@@ -32,6 +34,7 @@ export class AuthenticationService {
     if (payload.userId) {
       return this.usersService.getById(payload.userId);
     }
+    return null;
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
