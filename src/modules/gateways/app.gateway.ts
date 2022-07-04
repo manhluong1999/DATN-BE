@@ -20,11 +20,13 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(socket: Socket) {
     console.log('connect', socket.id);
-    // await this.chatService.getUserFromSocket(socket);
+    await this.chatService.getUserFromSocket(socket);
+    socket.emit('userconnected', 'manh');
   }
   async handleDisconnect(socket: Socket) {
     // A client has disconnected
     console.log('disconnect', socket.id);
+    socket.emit('disconnect');
   }
   @SubscribeMessage('send-message')
   async listenForMessages(

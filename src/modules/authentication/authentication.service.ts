@@ -21,7 +21,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
   ) {}
   public async saveSocketId(socketId: string, userId: string) {
-    await this.usersService.saveSocketIdByUserId(userId, socketId);
+    await this.usersService.saveSocketIdByUserId(socketId, userId);
   }
   public async register(registrationData: CreateUserDto) {
     registrationData.role = undefined;
@@ -31,6 +31,7 @@ export class AuthenticationService {
     const payload: TokenPayload = this.jwtService.verify(token, {
       secret: config.jwt.access_token_secret,
     });
+    console.log(payload);
     if (payload.userId) {
       return this.usersService.getById(payload.userId);
     }
