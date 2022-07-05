@@ -28,14 +28,18 @@ export class AuthenticationService {
     return this.usersService.createUser(registrationData);
   }
   public async getUserFromAuthenticationToken(token: string) {
-    const payload: TokenPayload = this.jwtService.verify(token, {
-      secret: config.jwt.access_token_secret,
-    });
-    console.log(payload);
-    if (payload.userId) {
-      return this.usersService.getById(payload.userId);
+    try {
+      const payload: TokenPayload = this.jwtService.verify(token, {
+        secret: config.jwt.access_token_secret,
+      });
+      console.log(payload);
+      if (payload.userId) {
+        return this.usersService.getById(payload.userId);
+      }
+      return null;
+    } catch (error) {
+      return null;
     }
-    return null;
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
