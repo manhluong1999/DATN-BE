@@ -36,7 +36,8 @@ export class ChatService {
         authToken,
       );
     if (!user) {
-      throw new WsException('Invalid credentials.');
+      return null;
+      // throw new WsException('Invalid credentials.');
     }
     await this.authenticationService.saveSocketId(socket.id, user.id);
     return user;
