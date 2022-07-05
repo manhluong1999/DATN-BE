@@ -38,6 +38,7 @@ export class AuthenticationService {
       }
       return null;
     } catch (error) {
+      console.log('VERIFY TOKEN ERROR');
       return null;
     }
   }
