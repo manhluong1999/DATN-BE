@@ -42,18 +42,35 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.sockets.to(socketId).emit('notification');
   }
 
+  // @SubscribeMessage('conversation')
+  // async listenForConversation(
+  //   @MessageBody()
+  //   body: {
+  //     conversationId: string;
+  //     userId: string;
+  //   },
+  //   @ConnectedSocket() socket: Socket,
+  // ) {
+  //   const sender = await this.chatService.getUserFromSocket(socket);
+  // }
+
   @SubscribeMessage('send-message')
   async listenForMessages(
-    @MessageBody() content: string,
+    @MessageBody()
+    body: {
+      conversationId: string;
+      senderId: string;
+      content: string;
+    },
     @ConnectedSocket() socket: Socket,
   ) {
-    const sender = await this.chatService.getUserFromSocket(socket);
-    const message = await this.chatService.saveMessage(content, sender);
-    this.server.sockets.emit('receive_message', {
-      content,
-      sender,
-    });
+    console.log(socket.id);
+    console.log(body);
+    const message = await this.chatService.saveMessage(body);
 
-    this.server.sockets.emit('receive_message', message);
+    const user = await this.userService.getById(body.senderId);
+    const { socketId } = user;
+    console.log('socketId send', socketId);
+    this.server.sockets.to(socketId).emit('receive_message', body);
   }
 }

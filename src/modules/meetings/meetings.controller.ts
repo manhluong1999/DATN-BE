@@ -30,7 +30,7 @@ export class MeetingController {
       meetingDate,
     );
   }
-  @UseGuards(RoleGuard([Role.User]))
+  @UseGuards(RoleGuard([Role.User, Role.Lawyer]))
   @ApiBearerAuth('JWT')
   @Get('user')
   async getListMeetingUser(
@@ -43,7 +43,7 @@ export class MeetingController {
     );
   }
 
-  @UseGuards(RoleGuard([Role.User]))
+  @UseGuards(RoleGuard([Role.User, Role.Lawyer]))
   @ApiBearerAuth('JWT')
   @Post()
   async createMeeting(

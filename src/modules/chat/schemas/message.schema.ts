@@ -15,7 +15,7 @@ export class Message {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop({ unique: true })
+  @Prop()
   content: string;
 
   @Prop()
@@ -23,9 +23,6 @@ export class Message {
 
   @Prop()
   senderId: string;
-
-  @Prop()
-  receiverId: string;
 }
 
 const MessageSchema = SchemaFactory.createForClass(Message);

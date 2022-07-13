@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { Transform } from 'class-transformer';
 
-export type ConversationDocument = Conversation & Document;
+export type PaymentDocument = Payment & Document;
 
 @Schema({
   toJSON: {
@@ -10,22 +10,25 @@ export type ConversationDocument = Conversation & Document;
     virtuals: true,
   },
 })
-export class Conversation {
+export class Payment {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
   @Prop()
-  name: string;
+  source: string;
 
   @Prop()
-  roomId: string;
+  destination: string;
 
   @Prop()
-  listUserIds: Array<string>;
+  amount: number;
+
+  @Prop()
+  description: string;
 }
 
-const ConversationSchema = SchemaFactory.createForClass(Conversation);
+const PaymentSchema = SchemaFactory.createForClass(Payment);
 
 // MessageSchema.index({ userEmail: 1 });
 
-export { ConversationSchema };
+export { PaymentSchema };
