@@ -54,7 +54,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //   const sender = await this.chatService.getUserFromSocket(socket);
   // }
 
-  @SubscribeMessage('send-message')
+  @SubscribeMessage('message')
   async listenForMessages(
     @MessageBody()
     body: {
@@ -78,6 +78,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const user = await this.userService.getById(receiverId);
     console.log('socket send to socket id', user.socketId);
-    this.server.sockets.to(user.socketId).emit('receive-message', body);
+    this.server.sockets.to(user.socketId).emit('message', body);
   }
 }
