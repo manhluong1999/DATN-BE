@@ -68,9 +68,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(body);
     const message = await this.chatService.saveMessage(body);
 
-    const user = await this.userService.getById(body.senderId);
-    const { socketId } = user;
-    console.log('socketId send', socketId);
-    this.server.sockets.to(socketId).emit('receive_message', body);
+    const conversation = await this.chatService.getConversationById(
+      body.conversationId,
+    );
+    const receiverId = conversation.listUserIds.find(
+      (item) => item != body.senderId,
+    );
+    const user = await this.userService.getById(receiverId);
+
+    this.server.sockets.to(user.socketId).emit('receive-message', body);
   }
 }

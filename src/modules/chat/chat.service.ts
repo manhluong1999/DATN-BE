@@ -21,6 +21,9 @@ export class ChatService {
     private conversationModel: Model<ConversationDocument>,
   ) {}
 
+  async getConversationById(conversationId: string) {
+    return await this.conversationModel.findById(conversationId);
+  }
   async getOneConversation(toUser: string, userId: string) {
     const findConversation = await this.conversationModel.findOne({
       $or: [
