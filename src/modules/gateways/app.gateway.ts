@@ -74,8 +74,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const receiverId = conversation.listUserIds.find(
       (item) => item != body.senderId,
     );
-    const user = await this.userService.getById(receiverId);
+    console.log('socket send to receiver id', receiverId);
 
+    const user = await this.userService.getById(receiverId);
+    console.log('socket send to socket id', user.socketId);
     this.server.sockets.to(user.socketId).emit('receive-message', body);
   }
 }
