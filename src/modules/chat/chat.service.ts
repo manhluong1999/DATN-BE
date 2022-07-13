@@ -49,8 +49,14 @@ export class ChatService {
     };
   }
   async getListConversationByUserId(userId: string) {
-    return await this.conversationModel.find({
+    const listConversation = await this.conversationModel.find({
       listUserIds: userId,
+    });
+    return listConversation.map((conversation) => {
+      return {
+        conversationId: conversation.id,
+        receiverId: conversation.listUserIds.find((item) => item != userId),
+      };
     });
   }
   async saveMessage(body: {
