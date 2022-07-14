@@ -25,21 +25,24 @@ export class ChatService {
     return await this.conversationModel.findById(conversationId);
   }
   async getOneConversation(toUser: string, userId: string) {
-    const findConversation = await this.conversationModel.findOne({
-      $or: [
-        {
-          listUserIds: [toUser, userId],
-        },
-        {
-          listUserIds: [userId, toUser],
-        },
-      ],
-    });
+    const findConversation : any = await this.conversationModel
+      .findOne({
+        $or: [
+          {
+            listUserIds: [toUser, userId],
+          },
+          {
+            listUserIds: [userId, toUser],
+          },
+        ],
+      })
+      .populate('listUserIds');
     if (!findConversation) {
       const newConversation = new this.conversationModel({
         name: 'conversation 1',
         listUserIds: [userId, toUser],
       });
+      await newConversation.populate('listUserIds');
       return newConversation.save();
     }
     const listMessages = await this.messageModel.find({
@@ -48,17 +51,20 @@ export class ChatService {
     return {
       listMessages,
       conversationId: findConversation.id,
-      receiverId: toUser,
+      receiver: findConversation.listUserIds.find((item) => item._id != userId),
     };
   }
   async getListConversationByUserId(userId: string) {
-    const listConversation = await this.conversationModel.find({
-      listUserIds: userId,
-    });
-    return listConversation.map((conversation) => {
+    const listConversation = await this.conversationModel
+      .find({
+        listUserIds: userId,
+      })
+      .populate('listUserIds');
+
+    return listConversation.map((conversation: any) => {
       return {
         conversationId: conversation.id,
-        receiverId: conversation.listUserIds.find((item) => item != userId),
+        receiver: conversation.listUserIds.find((item) => item._id != userId),
       };
     });
   }

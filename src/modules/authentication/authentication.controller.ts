@@ -50,6 +50,7 @@ export class AuthenticationController {
       );
       return {
         id: user._id,
+        _id: user._id,
         email: user.email,
         role: user.role,
         firstName: user.firstName,

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, ObjectId } from 'mongoose';
-import { Transform } from 'class-transformer';
+import mongoose, { Document, ObjectId } from 'mongoose';
+import { Transform, Type } from 'class-transformer';
+import { User } from 'src/modules/users/schemas/user.schema';
 
 export type ConversationDocument = Conversation & Document;
 
@@ -20,8 +21,11 @@ export class Conversation {
   @Prop()
   roomId: string;
 
-  @Prop()
-  listUserIds: Array<string>;
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: User.name }],
+  })
+  @Type(() => User)
+  listUserIds: User;
 }
 
 const ConversationSchema = SchemaFactory.createForClass(Conversation);
