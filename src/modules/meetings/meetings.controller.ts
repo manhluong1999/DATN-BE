@@ -38,7 +38,7 @@ export class MeetingController {
     @Query('status') status: MeetingStatus,
   ) {
     return this.meetingService.getListMeetingOfUserByStatus(
-      request.user._id.toString(),
+      request.user,
       status,
     );
   }
@@ -52,7 +52,7 @@ export class MeetingController {
   ) {
     return this.meetingService.createMeeting(
       createMeetingDto,
-      request.user._id,
+      request.user._id.toString(),
     );
   }
 }

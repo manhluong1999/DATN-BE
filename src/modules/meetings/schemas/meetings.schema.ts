@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, ObjectId } from 'mongoose';
-import { Exclude, Transform } from 'class-transformer';
+import mongoose, { Document, ObjectId } from 'mongoose';
+import { Exclude, Transform, Type } from 'class-transformer';
 import { MeetingStatus } from 'src/@core/constants';
+import { User } from 'src/modules/users/schemas/user.schema';
 
 export type MeetingDocument = Meeting & Document;
 
@@ -15,11 +16,13 @@ export class Meeting {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop()
-  userId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  @Type(() => User)
+  userId: User;
 
-  @Prop()
-  lawyerId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  @Type(() => User)
+  lawyerId: User;
 
   @Prop()
   meetingDate: string;

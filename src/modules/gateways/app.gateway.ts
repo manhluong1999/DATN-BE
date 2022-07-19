@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from '../chat/chat.service';
+import { NotificationService } from '../notifications/notifications.service';
 import { UsersService } from '../users/users.service';
 
 @WebSocketGateway(4001, {
@@ -19,6 +20,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   constructor(
     private readonly chatService: ChatService,
+    private readonly notificationService: NotificationService,
     private readonly userService: UsersService,
   ) {}
 
@@ -40,19 +42,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const { socketId } = user;
     console.log('socketId', socketId);
     this.server.sockets.to(socketId).emit('notification');
+    // this.notificationService.createNotification({});
   }
-
-  // @SubscribeMessage('conversation')
-  // async listenForConversation(
-  //   @MessageBody()
-  //   body: {
-  //     conversationId: string;
-  //     userId: string;
-  //   },
-  //   @ConnectedSocket() socket: Socket,
-  // ) {
-  //   const sender = await this.chatService.getUserFromSocket(socket);
-  // }
 
   @SubscribeMessage('message')
   async listenForMessages(

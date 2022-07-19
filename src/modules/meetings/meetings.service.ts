@@ -7,6 +7,7 @@ import { difference } from 'lodash';
 import CreateMeetingDto from './dto/create-meeting.dto';
 import { MeetingStatus, Role } from 'src/@core/constants';
 import { UsersService } from '../users/users.service';
+import { User } from '../users/schemas/user.schema';
 
 @Injectable()
 export class MeetingService {
@@ -27,9 +28,17 @@ export class MeetingService {
       endAt,
     };
   }
-  async getListMeetingOfUserByStatus(userId, status: MeetingStatus) {
-    console.log(userId);
-    const listMeetings = await this.model.find({ userId, status });
+  async getListMeetingOfUserByStatus(user: User, status: MeetingStatus) {
+    let listMeetings;
+    if (user.role == Role.Lawyer) {
+      listMeetings = await this.model
+        .find({ userId: user._id, status })
+        .populate('userId');
+    } else {
+      listMeetings = await this.model
+        .find({ userId: user._id, status })
+        .populate('lawyerId');
+    }
     return listMeetings;
   }
   async getListFreeMeetingsByLawyerId(lawyerId: string, meetingDate: string) {
@@ -68,7 +77,7 @@ export class MeetingService {
         message: 'Time code is existed',
       };
     }
-    await this.model.create({
+    const newMeeting = this.model.create({
       lawyerId,
       userId,
       meetingDate,
@@ -76,10 +85,11 @@ export class MeetingService {
       endAt,
       timeCode,
     });
+
     return {
       isSuccess: true,
     };
   }
 
-  async updateMeeting() {}
+  async updateStatusMeeting() {}
 }

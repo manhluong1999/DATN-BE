@@ -25,7 +25,7 @@ export class ChatService {
     return await this.conversationModel.findById(conversationId);
   }
   async getOneConversation(toUser: string, userId: string) {
-    const findConversation : any = await this.conversationModel
+    const findConversation: any = await this.conversationModel
       .findOne({
         $or: [
           {

@@ -57,6 +57,11 @@ export class User {
   socketId: string;
 
   @Prop({
+    default: 0,
+  })
+  balance: number;
+
+  @Prop({
     default: UserStatus.ACTIVE,
     enum: UserStatus,
   })
