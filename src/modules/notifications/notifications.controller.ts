@@ -24,5 +24,6 @@ export class NotificationController {
   @Get()
   async getListNotifications(@Req() request: RequestWithUser) {
     const userId = request.user._id.toString();
+    return await this.notificationService.getListNotificationByUserId(userId);
   }
 }
