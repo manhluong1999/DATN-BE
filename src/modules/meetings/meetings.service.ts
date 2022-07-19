@@ -8,6 +8,7 @@ import CreateMeetingDto from './dto/create-meeting.dto';
 import { MeetingStatus, Role } from 'src/@core/constants';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/schemas/user.schema';
+import UpdateMeetingDto from './dto/updateMeeting.dto';
 
 @Injectable()
 export class MeetingService {
@@ -91,5 +92,7 @@ export class MeetingService {
     };
   }
 
-  async updateStatusMeeting() {}
+  async updateMeeting(body: UpdateMeetingDto) {
+    return await this.model.findByIdAndUpdate(body.meetingId, body);
+  }
 }

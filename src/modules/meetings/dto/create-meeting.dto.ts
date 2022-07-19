@@ -1,6 +1,7 @@
 import { Role, UserStatus } from 'src/@core/constants';
 import { IsString, IsNotEmpty, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/modules/users/schemas/user.schema';
 export class CreateMeetingDto {
   @ApiProperty({
     type: String,

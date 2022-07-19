@@ -11,9 +11,11 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { MeetingStatus, Role } from 'src/@core/constants';
+import JwtAuthenticationGuard from '../authentication/guards/jwt-authentication.guard';
 import RoleGuard from '../authentication/guards/role.guard';
 import RequestWithUser from '../authentication/interfaces/requestWithUser.interface';
 import CreateMeetingDto from './dto/create-meeting.dto';
+import UpdateMeetingDto from './dto/updateMeeting.dto';
 import { MeetingService } from './meetings.service';
 
 @Controller()
@@ -32,7 +34,7 @@ export class MeetingController {
   }
   @UseGuards(RoleGuard([Role.User, Role.Lawyer]))
   @ApiBearerAuth('JWT')
-  @Get('user')
+  @Get()
   async getListMeetingUser(
     @Req() request: RequestWithUser,
     @Query('status') status: MeetingStatus,
@@ -54,5 +56,12 @@ export class MeetingController {
       createMeetingDto,
       request.user._id.toString(),
     );
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiBearerAuth('JWT')
+  @Put()
+  async updateMeeting(@Body() updateMeetingDto: UpdateMeetingDto) {
+    return this.meetingService.updateMeeting(updateMeetingDto);
   }
 }

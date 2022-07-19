@@ -4,6 +4,8 @@ import { Routes } from 'nest-router';
 import { AuthenticationModule } from 'src/modules/authentication/authentication.module';
 import { MeetingModule } from 'src/modules/meetings/meetings.module';
 import { ChatModule } from 'src/modules/chat/chat.module';
+import { NotifficationModule } from 'src/modules/notifications/notifications.module';
+import { PaymentModule } from 'src/modules/payment/payment.module';
 
 export const ROUTERS: Routes = [
   {
@@ -24,6 +26,14 @@ export const ROUTERS: Routes = [
       {
         path: '/chat',
         module: ChatModule,
+      },
+      {
+        path: '/notification',
+        module: NotifficationModule,
+      },
+      {
+        path: '/payment',
+        module: PaymentModule,
       },
       {
         path: '/health',

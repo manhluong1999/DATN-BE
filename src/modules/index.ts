@@ -15,5 +15,5 @@ export const MODULES = [
   MeetingModule,
   ChatModule,
   NotifficationModule,
-  PaymentModule
+  PaymentModule,
 ];
