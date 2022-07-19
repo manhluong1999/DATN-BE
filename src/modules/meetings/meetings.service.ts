@@ -33,7 +33,7 @@ export class MeetingService {
     let listMeetings;
     if (user.role == Role.Lawyer) {
       listMeetings = await this.model
-        .find({ userId: user._id, status })
+        .find({ lawyerId: user._id, status })
         .populate('userId');
     } else {
       listMeetings = await this.model
