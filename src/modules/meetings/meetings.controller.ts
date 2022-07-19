@@ -45,6 +45,14 @@ export class MeetingController {
     );
   }
 
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiBearerAuth('JWT')
+  @Get(':id')
+  async getDetailMeetingUser(@Param('id') id: string) {
+    console.log(id);
+    return this.meetingService.findOne(id);
+  }
+
   @UseGuards(RoleGuard([Role.User, Role.Lawyer]))
   @ApiBearerAuth('JWT')
   @Post()

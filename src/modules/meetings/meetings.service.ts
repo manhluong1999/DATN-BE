@@ -92,6 +92,12 @@ export class MeetingService {
     };
   }
 
+  async findOne(meetingId: string) {
+    return await this.model
+      .findById(meetingId)
+      .populate('userId')
+      .populate('lawyerId');
+  }
   async updateMeeting(body: UpdateMeetingDto) {
     return await this.model.findByIdAndUpdate(body.meetingId, body);
   }
