@@ -40,8 +40,11 @@ export class UsersController {
   }
 
   @Get('lawyers')
-  async findAllLawyer(@Query('status') status: UserStatus) {
-    return this.usersService.findAllLawyers(status);
+  async findAllLawyer(
+    @Query('status') status: UserStatus,
+    @Query('majorFields') majorFields: string,
+  ) {
+    return this.usersService.findAllLawyers(status, majorFields);
   }
 
   @Get('lawyer')

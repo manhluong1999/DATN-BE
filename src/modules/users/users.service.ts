@@ -17,7 +17,7 @@ import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
 import { FirebaseStorageService } from '../firebase-storage/firebase-storage.service';
 import { MAPPING_MAJOR_FIELD_CODE } from 'src/@core/constants/constant';
-
+import { intersection } from 'lodash';
 @Injectable()
 export class UsersService {
   constructor(
@@ -188,14 +188,14 @@ export class UsersService {
       isSuccess: true,
     };
   }
-  async findAllLawyers(status) {
+  async findAllLawyers(status, majorFields: string) {
     const lawyers = await this.userModel
       .find({
         role: Role.Lawyer,
         status,
       })
       .exec();
-    return Promise.all(
+    const result = await Promise.all(
       lawyers.map(async (lawyer) => {
         const findDetail = await this.lawyerDetailsService.findByEmail(
           lawyer.email,
@@ -213,6 +213,7 @@ export class UsersService {
           majorFields: findDetail?.majorFields.map(
             (item) => MAPPING_MAJOR_FIELD_CODE[item],
           ),
+          majorFieldsCode: findDetail?.majorFields,
           ratingScore: findDetail?.ratingScore,
           userRatesScore: findDetail?.userRatesScore,
           yearExperiences: findDetail?.yearExperiences,
@@ -221,6 +222,13 @@ export class UsersService {
         return res;
       }),
     );
+    if (majorFields) {
+      const arrayFields = majorFields.split(',');
+      return result.filter(
+        (item) => intersection(item.majorFieldsCode, arrayFields).length,
+      );
+    }
+    return result;
   }
 
   async findOneLawyer(id) {
