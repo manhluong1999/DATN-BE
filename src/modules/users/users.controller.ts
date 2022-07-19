@@ -41,10 +41,11 @@ export class UsersController {
 
   @Get('lawyers')
   async findAllLawyer(
-    @Query('status') status: UserStatus,
-    @Query('majorFields') majorFields: string,
+    @Query('status') status?: UserStatus,
+    @Query('majorFields') majorFields?: string,
+    @Query('address') address?: string,
   ) {
-    return this.usersService.findAllLawyers(status, majorFields);
+    return this.usersService.findAllLawyers(status, majorFields, address);
   }
 
   @Get('lawyer')

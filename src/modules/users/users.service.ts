@@ -188,7 +188,7 @@ export class UsersService {
       isSuccess: true,
     };
   }
-  async findAllLawyers(status, majorFields: string) {
+  async findAllLawyers(status, majorFields: string, address: string) {
     const lawyers = await this.userModel
       .find({
         role: Role.Lawyer,

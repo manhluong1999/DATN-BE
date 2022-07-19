@@ -31,14 +31,16 @@ export class MeetingService {
   }
   async getListMeetingOfUserByStatus(user: User, status: MeetingStatus) {
     let listMeetings;
+    const filter: any = {};
+    if (status) {
+      filter.status = status;
+    }
     if (user.role == Role.Lawyer) {
-      listMeetings = await this.model
-        .find({ lawyerId: user._id, status })
-        .populate('userId');
+      filter.lawyerId = user._id;
+      listMeetings = await this.model.find(filter).populate('userId');
     } else {
-      listMeetings = await this.model
-        .find({ userId: user._id, status })
-        .populate('lawyerId');
+      filter.userId = user._id;
+      listMeetings = await this.model.find(filter).populate('lawyerId');
     }
     return listMeetings;
   }
