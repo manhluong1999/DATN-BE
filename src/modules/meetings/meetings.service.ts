@@ -80,7 +80,7 @@ export class MeetingService {
         message: 'Time code is existed',
       };
     }
-    const newMeeting = this.model.create({
+    const newMeeting = await this.model.create({
       lawyerId,
       userId,
       meetingDate,
@@ -89,9 +89,7 @@ export class MeetingService {
       timeCode,
     });
 
-    return {
-      isSuccess: true,
-    };
+    return newMeeting;
   }
 
   async findOne(meetingId: string) {
