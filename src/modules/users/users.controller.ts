@@ -118,6 +118,8 @@ export class UsersController {
     return this.usersService.deleteUser(email);
   }
 
+  @UseGuards(RoleGuard([Role.Admin]))
+  @ApiBearerAuth('JWT')
   @Delete('deleteAll')
   async deleteAllUser() {
     await this.usersService.deleteMany();

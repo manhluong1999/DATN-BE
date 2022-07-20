@@ -38,11 +38,15 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
   ) {
     console.log('body', body);
-    const user = await this.userService.findByEmail(body.receiverEmail);
+    const user = await this.userService.getById(body.userId);
     const { socketId } = user;
     console.log('socketId', socketId);
-    this.server.sockets.to(socketId).emit('notification');
-    // this.notificationService.createNotification({});
+    this.server.sockets.to(socketId).emit('notification', body.content);
+    this.notificationService.createNotification({
+      userId: body.userId,
+      content: body.content,
+      url: body.url,
+    });
   }
 
   @SubscribeMessage('message')
