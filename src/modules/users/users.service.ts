@@ -287,4 +287,18 @@ export class UsersService {
       throw new NotFoundExceptionCustom('USER NOT FOUND');
     }
   }
+  async updatePassword(userId: string, newPassword: string) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = await this.userModel
+      .findByIdAndUpdate(userId, { password: hashedPassword })
+      .setOptions({ overwrite: false });
+
+    if (!user) {
+      throw new NotFoundExceptionCustom('USER NOT FOUND');
+    }
+
+    return {
+      isSuccess: true,
+    };
+  }
 }

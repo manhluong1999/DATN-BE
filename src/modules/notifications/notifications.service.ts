@@ -21,6 +21,9 @@ export class NotificationService {
   }
 
   async getListNotificationByUserId(userId: string) {
-    return await this.notificationModel.find({ userId }).populate('userId');
+    return await this.notificationModel
+      .find({ userId })
+      .sort({ createdAt: -1 })
+      .populate('userId');
   }
 }

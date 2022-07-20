@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { Role } from 'src/@core/constants';
 import { UsersService } from '../users/users.service';
 import { AuthenticationService } from './authentication.service';
+import ChangePasswordDto from './dto/change-password.dto';
 import LogInDto from './dto/logIn.dto';
 import RefreshTokenDto from './dto/refresh-token.dto';
 import RegisterDto from './dto/register.dto';
@@ -68,6 +70,17 @@ export class AuthenticationController {
       };
     }
     return user;
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Put('change-password')
+  @ApiBearerAuth('JWT')
+  async changePassword(
+    @Request() request: RequestWithUser,
+    @Body() body: ChangePasswordDto,
+  ) {
+    const user = request.user;
+    return await this.authenticationService.changePassword(user, body);
   }
 
   @UseGuards(JwtRefreshTokenGuard)

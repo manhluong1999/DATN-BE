@@ -14,12 +14,14 @@ import { User } from '../users/schemas/user.schema';
 import { config } from 'src/@core/config';
 import { getTime } from 'date-fns';
 import CreateUserDto from '../users/dto/createUser.dto';
+import ChangePasswordDto from './dto/change-password.dto';
 @Injectable()
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
+
   public async saveSocketId(socketId: string, userId: string) {
     await this.usersService.saveSocketIdByUserId(socketId, userId);
   }
@@ -41,6 +43,15 @@ export class AuthenticationService {
       console.log('VERIFY TOKEN ERROR');
       return null;
     }
+  }
+  public async changePassword(user: User, body: ChangePasswordDto) {
+    const findUser = await this.usersService.getById(user._id.toString());
+    await this.verifyPassword(body.oldPassword, findUser.password);
+
+    return this.usersService.updatePassword(
+      user._id.toString(),
+      body.newPassword,
+    );
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
