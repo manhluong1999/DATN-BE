@@ -15,7 +15,10 @@ export class NotificationService {
   ) {}
 
   async createNotification(body: CreateNotificationDto) {
-    const newConversation = new this.notificationModel(body);
+    const newConversation = new this.notificationModel({
+      ...body,
+      createdAt: new Date(),
+    });
     await newConversation.populate('userId');
     return newConversation.save();
   }
