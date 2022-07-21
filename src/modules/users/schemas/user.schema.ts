@@ -57,7 +57,7 @@ export class User {
   socketId: string;
 
   @Prop({
-    default: 0,
+    default: 15000000,
   })
   balance: number;
 

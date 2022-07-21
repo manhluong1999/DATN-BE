@@ -222,13 +222,17 @@ export class UsersService {
         return res;
       }),
     );
+    let response = result;
     if (majorFields) {
       const arrayFields = majorFields.split(',');
-      return result.filter(
+      response = response.filter(
         (item) => intersection(item.majorFieldsCode, arrayFields).length,
       );
     }
-    return result;
+    if (address) {
+      response = response.filter((item) => item.address == address);
+    }
+    return response;
   }
 
   async findOneLawyer(id) {
