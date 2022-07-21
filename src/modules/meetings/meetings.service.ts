@@ -5,15 +5,17 @@ import { Meeting, MeetingDocument } from './schemas/meetings.schema';
 import moment from 'moment';
 import { difference } from 'lodash';
 import CreateMeetingDto from './dto/create-meeting.dto';
-import { MeetingStatus, Role } from 'src/@core/constants';
+import { MeetingStatus, PaymentStatus, Role } from 'src/@core/constants';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/schemas/user.schema';
 import UpdateMeetingDto from './dto/updateMeeting.dto';
+import { Payment, PaymentDocument } from '../payment/schemas/payment.schema';
 
 @Injectable()
 export class MeetingService {
   constructor(
     @InjectModel(Meeting.name) private model: Model<MeetingDocument>,
+    @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
     private readonly userService: UsersService,
   ) {}
 
@@ -99,6 +101,22 @@ export class MeetingService {
       .populate('lawyerId');
   }
   async updateMeeting(body: UpdateMeetingDto) {
-    return await this.model.findByIdAndUpdate(body.meetingId, body);
+    const meeting = await this.model
+      .findOne({ id: body.meetingId })
+      .populate('lawyerId');
+    if (body.status == MeetingStatus.FINISHED) {
+      const newBalance = meeting.price + meeting.lawyerId.balance;
+      await Promise.all([
+        this.userService.userModel.findByIdAndUpdate(meeting.lawyerId._id, {
+          balance: newBalance,
+        }),
+        this.paymentModel.findOneAndUpdate(
+          { meetingId: body.meetingId },
+          { $set: { paymentStatus: PaymentStatus.FINISHED } },
+        ),
+      ]);
+    }
+
+    return meeting;
   }
 }

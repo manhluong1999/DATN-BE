@@ -22,7 +22,7 @@ import { FindLawyersDto } from './dto/findAllLawyer.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(User.name) public userModel: Model<UserDocument>,
     public readonly lawyerDetailsService: LawyerDetailService,
     private readonly firebaseStorageService: FirebaseStorageService,
   ) {}
