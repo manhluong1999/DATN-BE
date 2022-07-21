@@ -40,7 +40,7 @@ export class UsersController {
     return this.usersService.findAll({ role: Role.User });
   }
 
-  @Get('lawyers')
+  @Post('lawyers')
   async findAllLawyer(
     @Query('status') status: UserStatus,
     @Body() data: FindLawyersDto,
