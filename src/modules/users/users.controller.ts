@@ -27,6 +27,7 @@ import {
   FileFieldsInterceptor,
   FilesInterceptor,
 } from '@nestjs/platform-express';
+import { FindLawyersDto } from './dto/findAllLawyer.dto';
 
 @Controller()
 export class UsersController {
@@ -41,11 +42,10 @@ export class UsersController {
 
   @Get('lawyers')
   async findAllLawyer(
-    @Query('status') status?: UserStatus,
-    @Query('majorFields') majorFields?: string,
-    @Query('address') address?: string,
+    @Query('status') status: UserStatus,
+    @Body() data: FindLawyersDto,
   ) {
-    return this.usersService.findAllLawyers(status, majorFields, address);
+    return this.usersService.findAllLawyers(status, data);
   }
 
   @Get('lawyer')
