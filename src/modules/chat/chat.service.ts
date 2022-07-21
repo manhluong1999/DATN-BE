@@ -73,7 +73,10 @@ export class ChatService {
     senderId: string;
     content: string;
   }) {
-    const newMessage = new this.messageModel(body);
+    const newMessage = new this.messageModel({
+      ...body,
+      createdAt: new Date(),
+    });
     return newMessage.save();
   }
 
