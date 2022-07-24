@@ -75,4 +75,34 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('socket send to socket id', user.socketId);
     this.server.sockets.to(user.socketId).emit('message', body);
   }
+
+  @SubscribeMessage('callUser')
+  async listenOnCallUsers(
+    @MessageBody()
+    body: {
+      socketId: string;
+      from: string;
+      name: string;
+      signalData: any;
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.server.sockets.to(body.socketId).emit('callUser', {
+      signal: body.signalData,
+      from: body.from,
+      name: body.name,
+    });
+  }
+
+  @SubscribeMessage('answerCall')
+  async listenOnAnswerCall(
+    @MessageBody()
+    body: {
+      signal: any;
+      to: string;
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.server.sockets.to(body.to).emit('callAccepted', body.signal);
+  }
 }

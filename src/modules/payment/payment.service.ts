@@ -70,4 +70,8 @@ export class PaymentService {
       message: 'Meeting paid successfully',
     };
   }
+
+  async updatePayment(meetingId) {
+    
+  }
 }
