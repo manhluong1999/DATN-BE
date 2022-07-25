@@ -116,7 +116,6 @@ export class MeetingService {
         ),
       ]);
     }
-
-    return meeting;
+    return this.model.findByIdAndUpdate(body.meetingId, body, { new: true });
   }
 }
