@@ -58,6 +58,8 @@ export class AuthenticationController {
         firstName: user.firstName,
         lastName: user.lastName,
         imgUrl: user.imgUrl,
+        socketId: user.socketId,
+        balance: user.balance,
         fullName: user.fullName,
         phone: user.phone,
         address: user.address,
