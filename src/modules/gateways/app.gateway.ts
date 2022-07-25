@@ -84,13 +84,16 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       from: string;
       name: string;
       signalData: any;
+      meetingId: string;
     },
     @ConnectedSocket() socket: Socket,
   ) {
+    console.log(body.from);
     this.server.sockets.to(body.userToCall).emit('callUser', {
       signal: body.signalData,
       from: body.from,
       name: body.name,
+      meetingId: body.meetingId,
     });
   }
 
