@@ -27,7 +27,11 @@ export class UsersService {
     private readonly firebaseStorageService: FirebaseStorageService,
   ) {}
   async saveSocketIdByUserId(socketId: string, userId: string) {
-    return this.userModel.findByIdAndUpdate(userId, { socketId });
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { socketId },
+      { new: true },
+    );
   }
   async getById(id: string) {
     const user = await this.userModel.findById(id);

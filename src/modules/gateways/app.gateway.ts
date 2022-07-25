@@ -80,14 +80,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async listenOnCallUsers(
     @MessageBody()
     body: {
-      socketId: string;
+      userToCall: string;
       from: string;
       name: string;
       signalData: any;
     },
     @ConnectedSocket() socket: Socket,
   ) {
-    this.server.sockets.to(body.socketId).emit('callUser', {
+    this.server.sockets.to(body.userToCall).emit('callUser', {
       signal: body.signalData,
       from: body.from,
       name: body.name,
