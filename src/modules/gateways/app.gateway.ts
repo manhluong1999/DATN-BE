@@ -88,7 +88,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     },
     @ConnectedSocket() socket: Socket,
   ) {
-    console.log(body.from);
+    console.log('callUser:', body.from);
+    console.log('callUser:', body.meetingId);
     this.server.sockets.to(body.userToCall).emit('callUser', {
       signal: body.signalData,
       from: body.from,
@@ -103,9 +104,13 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     body: {
       signal: any;
       to: string;
+      fromName: string;
     },
     @ConnectedSocket() socket: Socket,
   ) {
-    this.server.sockets.to(body.to).emit('callAccepted', body.signal);
+    console.log('answerCall:', body.to);
+    this.server.sockets
+      .to(body.to)
+      .emit('callAccepted', { signal: body.signal, fromName: body.fromName });
   }
 }
