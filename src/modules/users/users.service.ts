@@ -19,10 +19,12 @@ import { FirebaseStorageService } from '../firebase-storage/firebase-storage.ser
 import { MAPPING_MAJOR_FIELD_CODE } from 'src/@core/constants/constant';
 import { intersection } from 'lodash';
 import { FindLawyersDto } from './dto/findAllLawyer.dto';
+import { Meeting, MeetingDocument } from '../meetings/schemas/meetings.schema';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) public userModel: Model<UserDocument>,
+    @InjectModel(Meeting.name) private meetingModel: Model<MeetingDocument>,
     public readonly lawyerDetailsService: LawyerDetailService,
     private readonly firebaseStorageService: FirebaseStorageService,
   ) {}
@@ -246,6 +248,10 @@ export class UsersService {
     const findDetail = await this.lawyerDetailsService.findByEmail(
       lawyer.email,
     );
+
+    const findMeeting = await this.meetingModel
+      .find({ lawyerId: id })
+      .populate('userId');
     const res = {
       id: lawyer.id,
       email: lawyer.email,
@@ -261,6 +267,17 @@ export class UsersService {
       userRatesScore: findDetail?.userRatesScore,
       yearExperiences: findDetail?.yearExperiences,
       evidenceUrls: findDetail?.evidenceUrls,
+      feedbacks: findMeeting.map((item) => {
+        return {
+          user: {
+            email: item.userId.email,
+            firstName: item.userId.firstName,
+            lastName: item.userId.lastName,
+            imgUrl: item.userId.imgUrl,
+          },
+          feedback: item.feedback || 'Không có đánh giá',
+        };
+      }),
     };
     return res;
   }

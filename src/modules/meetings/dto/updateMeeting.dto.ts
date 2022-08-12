@@ -22,6 +22,12 @@ export class UpdateMeetingDto {
     example: 1500000,
   })
   price?: number;
+
+  @ApiProperty({
+    type: String,
+    example: 'feedback of user',
+  })
+  feedback?: string;
 }
 
 export default UpdateMeetingDto;

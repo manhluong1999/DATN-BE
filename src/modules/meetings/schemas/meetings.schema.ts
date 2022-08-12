@@ -27,6 +27,9 @@ export class Meeting {
   @Prop()
   meetingDate: string;
 
+  @Prop()
+  feedback: string;
+
   @Prop({
     default: MeetingStatus.PENDING,
     enum: MeetingStatus,
