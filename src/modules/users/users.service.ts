@@ -258,8 +258,12 @@ export class UsersService {
       .find({ lawyerId: id })
       .populate('userId');
     const feedbacks = [];
+    let sumUserRating = 0,
+      count = 0;
     for (const meeting of listMeeting) {
       if (meeting.status == MeetingStatus.FINISHED) {
+        sumUserRating += meeting.rating;
+        count += 1;
         feedbacks.push({
           meetingId: meeting.id,
           user: {
@@ -269,6 +273,7 @@ export class UsersService {
             imgUrl: meeting.userId.imgUrl,
           },
           feedback: meeting.feedback || 'Không có đánh giá',
+          rating: meeting.rating || 5,
         });
       }
     }
@@ -284,7 +289,7 @@ export class UsersService {
       description: findDetail?.description,
       majorFields: findDetail?.majorFields,
       ratingScore: findDetail?.ratingScore,
-      userRatesScore: findDetail?.userRatesScore,
+      userRatesScore: count ? sumUserRating / count : 5,
       yearExperiences: findDetail?.yearExperiences,
       evidenceUrls: findDetail?.evidenceUrls,
       feedbacks,

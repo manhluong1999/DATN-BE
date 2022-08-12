@@ -28,6 +28,12 @@ export class UpdateMeetingDto {
     example: 'feedback of user',
   })
   feedback?: string;
+
+  @ApiProperty({
+    type: Number,
+    example: 5,
+  })
+  rating?: number;
 }
 
 export default UpdateMeetingDto;

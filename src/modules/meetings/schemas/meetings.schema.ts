@@ -30,6 +30,9 @@ export class Meeting {
   @Prop()
   feedback: string;
 
+  @Prop()
+  rating: number;
+
   @Prop({
     default: MeetingStatus.PENDING,
     enum: MeetingStatus,
