@@ -11,7 +11,12 @@ import {
   NotFoundExceptionCustom,
   UnAuthorizedExceptionCustom,
 } from 'src/@core/exceptions';
-import { MongoError, Role, UserStatus } from 'src/@core/constants';
+import {
+  MeetingStatus,
+  MongoError,
+  Role,
+  UserStatus,
+} from 'src/@core/constants';
 import { LawyerDetailService } from '../lawyer_details/lawyer-detail.service';
 import CreateLawyerDto from '../lawyer_details/dtos/createLawyer.dto';
 import UpdateLawyerDto from '../lawyer_details/dtos/updateLawyer.dto';
@@ -249,9 +254,24 @@ export class UsersService {
       lawyer.email,
     );
 
-    const findMeeting = await this.meetingModel
+    const listMeeting = await this.meetingModel
       .find({ lawyerId: id })
       .populate('userId');
+    const feedbacks = [];
+    for (const meeting of listMeeting) {
+      if (meeting.status == MeetingStatus.FINISHED) {
+        feedbacks.push({
+          meetingId: meeting.id,
+          user: {
+            email: meeting.userId.email,
+            firstName: meeting.userId.firstName,
+            lastName: meeting.userId.lastName,
+            imgUrl: meeting.userId.imgUrl,
+          },
+          feedback: meeting.feedback || 'Không có đánh giá',
+        });
+      }
+    }
     const res = {
       id: lawyer.id,
       email: lawyer.email,
@@ -267,17 +287,7 @@ export class UsersService {
       userRatesScore: findDetail?.userRatesScore,
       yearExperiences: findDetail?.yearExperiences,
       evidenceUrls: findDetail?.evidenceUrls,
-      feedbacks: findMeeting.map((item) => {
-        return {
-          user: {
-            email: item.userId.email,
-            firstName: item.userId.firstName,
-            lastName: item.userId.lastName,
-            imgUrl: item.userId.imgUrl,
-          },
-          feedback: item.feedback || 'Không có đánh giá',
-        };
-      }),
+      feedbacks,
     };
     return res;
   }
