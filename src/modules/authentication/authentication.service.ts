@@ -2,7 +2,7 @@ import { BadRequestExceptionCustom } from './../../@core/exceptions/bad-request.
 import { LogInDto } from './dto/logIn.dto';
 import { Injectable } from '@nestjs/common';
 import RegisterDto from './dto/register.dto';
-import { MongoError } from './../../@core/constants';
+import { MongoError, UserStatus } from './../../@core/constants';
 import {
   InternalServerExceptionCustom,
   UnAuthorizedExceptionCustom,
@@ -58,7 +58,9 @@ export class AuthenticationService {
     try {
       const user = await this.usersService.findByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
-
+      if (user.status == UserStatus.BLOCKED) {
+        throw new BadRequestExceptionCustom('Your account is blocked');
+      }
       return user;
     } catch (error) {
       throw new UnAuthorizedExceptionCustom('Wrong credentials provided');
