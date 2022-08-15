@@ -3,5 +3,5 @@ export enum UserStatus {
   PENDING = 1,
   APPROVED = 2,
   NOT_APPROVED = 3,
-  DELETED = 4,
+  BLOCKED = 4,
 }

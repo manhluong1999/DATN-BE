@@ -36,8 +36,8 @@ export class UsersController {
   @UseGuards(RoleGuard([Role.Admin]))
   @ApiBearerAuth('JWT')
   @Get()
-  async findAllUser() {
-    return this.usersService.findAll({ role: Role.User });
+  async findAllUser(@Query('status') status: UserStatus) {
+    return this.usersService.findAll({ role: Role.User, status });
   }
 
   @Post('lawyers')
