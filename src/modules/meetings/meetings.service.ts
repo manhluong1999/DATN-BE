@@ -101,9 +101,11 @@ export class MeetingService {
       .populate('lawyerId');
   }
   async updateMeeting(body: UpdateMeetingDto) {
+    console.log(body);
     const meeting = await this.model
-      .findOne({ id: body.meetingId })
+      .findOne({ _id: body.meetingId })
       .populate('lawyerId');
+    console.log(meeting);
     if (body.status == MeetingStatus.FINISHED) {
       const newBalance = meeting.price + meeting.lawyerId.balance;
       await Promise.all([
